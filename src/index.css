@@ -1,0 +1,209 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+html {
+  font-family: var(--font-sans);
+}
+
+/* ==========================================================================
+   Horizontal overflow guard
+   Scroll-reveal animations start with a small x-offset (±32px). Until a
+   section enters the viewport those transformed boxes extend past the right
+   edge, which used to make the whole page scroll sideways on mobile.
+   `clip` (unlike `hidden`) does not create a scroll container, so the sticky
+   navbar and smooth anchor scrolling keep working.
+   ========================================================================== */
+html,
+body {
+  overflow-x: clip;
+}
+
+/* ==========================================================================
+   Global polish: anchor scrolling clears the sticky navbar
+   ========================================================================== */
+[id] {
+  scroll-margin-top: 7.5rem;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Visible, branded keyboard focus ring */
+:focus-visible {
+  outline: 2px solid #C61A1A;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Thin, subtle scrollbar for long modal bodies */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+/* ==========================================================================
+   Keyframes
+   ========================================================================== */
+@keyframes dz-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes dz-shine {
+  from { transform: translateX(-130%); }
+  to { transform: translateX(130%); }
+}
+
+@keyframes dz-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes dz-orbit {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes dz-orbit-reverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes dz-flow {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -72; }
+}
+
+@keyframes dz-pulse-ring {
+  0% { transform: scale(1); opacity: 0.45; }
+  70% { transform: scale(2.1); opacity: 0; }
+  100% { transform: scale(2.1); opacity: 0; }
+}
+
+@keyframes dz-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes dz-drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.5; }
+  50% { transform: translate3d(4%, 3%, 0) scale(1.08); opacity: 0.75; }
+}
+
+@keyframes dz-drop {
+  0% { transform: translateY(-6px); opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translateY(26px); opacity: 0; }
+}
+
+@keyframes dz-glow-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(217, 30, 39, 0.35); }
+  50% { box-shadow: 0 0 0 12px rgba(217, 30, 39, 0); }
+}
+
+/* ==========================================================================
+   Utilities
+   ========================================================================== */
+.animate-fade-in {
+  animation: dz-fade-in 0.28s ease-out both;
+}
+
+/* Sweep of light across primary buttons on hover */
+.dz-btn-shine {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.dz-btn-shine::after {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  background: linear-gradient(105deg, transparent 32%, rgba(255, 255, 255, 0.38) 46%, rgba(255, 255, 255, 0.12) 54%, transparent 68%);
+  transform: translateX(-130%);
+  pointer-events: none;
+}
+.dz-btn-shine:hover::after {
+  animation: dz-shine 0.85s ease forwards;
+}
+
+/* Infinite logo marquee */
+.dz-marquee {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 9%, #000 91%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 9%, #000 91%, transparent);
+}
+.dz-marquee-track {
+  animation: dz-marquee 42s linear infinite;
+  will-change: transform;
+}
+.dz-marquee:hover .dz-marquee-track {
+  animation-play-state: paused;
+}
+
+/* Rotating dashed orbit ring behind the 5D wheel */
+.dz-orbit-ring {
+  animation: dz-orbit 46s linear infinite;
+  transform-origin: 460px 300px;
+}
+.dz-orbit-ring-reverse {
+  animation: dz-orbit-reverse 64s linear infinite;
+  transform-origin: 460px 300px;
+}
+
+/* Orbiting service rings (services hero) — origin = each element's own
+   center, so the outer track spins forward while its chips counter-spin
+   to stay upright, and the inner track does the opposite. */
+.dz-spin {
+  animation: dz-orbit 46s linear infinite;
+  transform-origin: center;
+}
+.dz-spin-rev {
+  animation: dz-orbit-reverse 46s linear infinite;
+  transform-origin: center;
+}
+.dz-spin-back {
+  animation: dz-orbit-reverse 34s linear infinite;
+  transform-origin: center;
+}
+.dz-spin-back-rev {
+  animation: dz-orbit 34s linear infinite;
+  transform-origin: center;
+}
+
+/* Energy current flowing along a hovered connector */
+.dz-flow {
+  animation: dz-flow 0.9s linear infinite;
+}
+
+.dz-float {
+  animation: dz-float 6s ease-in-out infinite;
+}
+
+.dz-glow-pulse {
+  animation: dz-glow-pulse 2.4s ease-out infinite;
+}
+
+/* Growth Engine schematic labels stay legible when the SVG scales down */
+@media (max-width: 640px) {
+  .dz-engine-label {
+    font-size: 15px;
+  }
+}
+
+/* ==========================================================================
+   Respect reduced-motion preferences across the whole experience
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

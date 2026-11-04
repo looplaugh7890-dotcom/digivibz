@@ -1,0 +1,12 @@
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+
+# AI Studio temp artifacts + export archives (not part of the site)
+.aistudio/
+*.zip
