@@ -161,7 +161,7 @@ export const SERVICES: Service[] = [
  * Slugs that already have a dedicated detail page at `#/service/<slug>`.
  * Cards for these become links; the rest stay presentational until built.
  */
-export const SERVICE_DETAIL_SLUGS: string[] = ['social-media-marketing'];
+export const SERVICE_DETAIL_SLUGS: string[] = ['social-media-marketing', 'application-development'];
 
 /** "One system" diagram — inputs on the left, outcomes on the right. */
 export const CONVERGENCE_SERVICES = [

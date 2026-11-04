@@ -28,6 +28,7 @@ import { TermsPage } from './pages/TermsPage';
 import { MarketingDisclaimerPage } from './pages/MarketingDisclaimerPage';
 import { LegalNoticePage } from './pages/LegalNoticePage';
 import { SocialMediaServicePage } from './pages/SocialMediaServicePage';
+import { AppDevelopmentServicePage } from './pages/AppDevelopmentServicePage';
 import { CaseStudy } from './types';
 
 type Route = 'home' | 'about' | 'contact' | 'portfolio' | 'services' | 'service' | 'caseStudy' | 'admin' | 'refundPolicy' | 'privacyPolicy' | 'terms' | 'disclaimer' | 'legalNotice';
@@ -180,6 +181,8 @@ export default function App() {
             ) : route === 'service' ? (
               serviceSlug === 'social-media-marketing' ? (
                 <SocialMediaServicePage onOpenAudit={handleOpenAudit} />
+              ) : serviceSlug === 'application-development' ? (
+                <AppDevelopmentServicePage onOpenAudit={handleOpenAudit} />
               ) : (
                 /* Unknown service slug → the catalog, so 404-ish URLs stay useful. */
                 <ServicesPage onOpenAudit={handleOpenAudit} />
