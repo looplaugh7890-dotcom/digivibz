@@ -187,11 +187,9 @@ html {
   animation: dz-glow-pulse 2.4s ease-out infinite;
 }
 
-/* Growth Engine schematic labels stay legible when the SVG scales down */
-@media (max-width: 640px) {
-  .dz-engine-label {
-    font-size: 15px;
-  }
+/* Expanding halo ring (halos on cards, phones, hubs) */
+.dz-pulse-ring {
+  animation: dz-pulse-ring 2.8s ease-out infinite;
 }
 
 /* ==========================================================================

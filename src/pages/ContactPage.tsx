@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import {
   ArrowRight,
@@ -11,6 +11,7 @@ import {
   Mail,
   MapPin,
   Phone,
+  PhoneOff,
   Search,
   Target,
   TrendingUp,
@@ -58,16 +59,8 @@ const HERO_STATS = [
   { value: '4X', label: 'Avg growth', red: false },
 ];
 
-/**
- * Four channel nodes on the right of the response-desk schematic.
- * x1/y1 = line start on the hub edge (r=46 around 280,158); cy = node center.
- */
-const DESK_CHANNELS = [
-  { label: 'EMAIL', x1: 312.8, y1: 125.7, cy: 44 },
-  { label: 'PHONE', x1: 322.6, y1: 140.4, cy: 110 },
-  { label: 'LINKEDIN', x1: 325.5, y1: 165.0, cy: 176 },
-  { label: 'US-WIDE', x1: 317.3, y1: 185.0, cy: 242 },
-];
+/** Resting/peak heights (%) of the call-waveform bars in the hero phone. */
+const CALL_WAVE = [45, 80, 55, 100, 65, 90, 50, 75, 40];
 
 /**
  * Contact page (`#/contact`) — client brief: hero → audit form → what
@@ -93,6 +86,36 @@ export const ContactPage: React.FC = () => {
     animate: { opacity: 1, y: 0 },
     transition: { duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] as const },
   });
+
+  /* Direct-line phone: idle → connecting → live → idle. */
+  const [call, setCall] = useState<'idle' | 'connecting' | 'live'>('idle');
+  const [callSeconds, setCallSeconds] = useState(0);
+
+  useEffect(() => {
+    if (call !== 'live') return;
+    const tick = window.setInterval(() => setCallSeconds((s) => s + 1), 1000);
+    return () => window.clearInterval(tick);
+  }, [call]);
+
+  useEffect(() => {
+    if (call !== 'connecting') return;
+    const t = window.setTimeout(() => setCall('live'), 1100);
+    return () => window.clearTimeout(t);
+  }, [call]);
+
+  const toggleCall = () => {
+    if (call === 'idle') {
+      setCallSeconds(0);
+      setCall('connecting');
+    } else if (call === 'live') {
+      setCall('idle');
+      setCallSeconds(0);
+    }
+  };
+
+  const callClock = `${String(Math.floor(callSeconds / 60)).padStart(2, '0')}:${String(
+    callSeconds % 60,
+  ).padStart(2, '0')}`;
 
   return (
     <div className="bg-white">
@@ -176,7 +199,7 @@ export const ContactPage: React.FC = () => {
             </div>
 
             {/* ---------------------------------------------------------- */}
-            {/* Right column: Response Desk routing schematic (white/red)    */}
+            {/* Right column: interactive direct-line phone panel           */}
             {/* ---------------------------------------------------------- */}
             <div className="lg:col-span-6 flex flex-col w-full">
               <motion.div
@@ -185,14 +208,14 @@ export const ContactPage: React.FC = () => {
                 transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
                 className="flex flex-col h-full"
               >
-                {/* Response desk panel — same white family as the About engine schematic */}
+                {/* Direct-line panel — same white family as the other hero cards */}
                 <div className="rounded-3xl bg-white border border-slate-200 overflow-hidden shadow-[0_20px_60px_-30px_rgba(15,23,42,0.25)]">
                   {/* Panel header */}
                   <div className="flex items-center justify-between px-5 sm:px-6 pt-5">
                     <div className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-[#C61A1A] animate-pulse" />
                       <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500">
-                        Digivibz Response Desk
+                        Digivibz Direct Line
                       </span>
                     </div>
                     <span className="text-[10px] font-bold uppercase tracking-widest text-[#C61A1A] bg-red-50 border border-red-200 px-2.5 py-1 rounded-full">
@@ -200,68 +223,147 @@ export const ContactPage: React.FC = () => {
                     </span>
                   </div>
 
-                  {/* Schematic: goal → response desk → four channels */}
-                  <svg
-                    viewBox="0 0 560 300"
-                    className="w-full select-none"
-                    role="img"
-                    aria-label="Schematic: your business goals flow into the Digivibz response desk and are routed to email, phone, LinkedIn, and US-wide coverage, answered within 24 to 48 hours"
-                  >
-                    <defs>
-                      <pattern id="dz-desk-grid" width="28" height="28" patternUnits="userSpaceOnUse">
-                        <circle cx="1.5" cy="1.5" r="1.5" fill="#E2E8F0" />
-                      </pattern>
-                    </defs>
-                    <rect x="0" y="0" width="560" height="300" fill="url(#dz-desk-grid)" opacity="0.55" />
-
-                    {/* Input connector: your goals → desk */}
-                    <line x1="106" y1="158" x2="226" y2="158" stroke="#E2E8F0" strokeWidth="2" />
-                    <line x1="106" y1="158" x2="226" y2="158" stroke="#C61A1A" strokeWidth="2" strokeDasharray="10 8" className="dz-flow" opacity="0.5" />
-                    <path d="M222 152 L230 158 L222 164" fill="none" stroke="#C61A1A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-
-                    {/* Input node: your goals */}
-                    <rect x="16" y="120" width="90" height="76" rx="16" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
-                    <rect x="42" y="142" width="38" height="26" rx="4" fill="#FFFFFF" stroke="#94A3B8" strokeWidth="1.8" />
-                    <path d="M43 145 L61 159 L79 145" fill="none" stroke="#94A3B8" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                    <circle cx="78" cy="144" r="5" fill="#C61A1A" stroke="#FFFFFF" strokeWidth="1.5" />
-                    <text x="61" y="216" textAnchor="middle" fontSize="10" fontWeight="700" fill="#64748B" letterSpacing="1">YOUR</text>
-                    <text x="61" y="230" textAnchor="middle" fontSize="10" fontWeight="700" fill="#64748B" letterSpacing="1">GOALS</text>
-
-                    {/* Hub pulse ring */}
-                    <circle
-                      cx="280"
-                      cy="158"
-                      r="46"
-                      fill="none"
-                      stroke="#C61A1A"
-                      strokeWidth="1.5"
-                      opacity="0.35"
-                      style={{
-                        transformBox: 'fill-box',
-                        transformOrigin: 'center',
-                        animation: reduceMotion ? undefined : 'dz-pulse-ring 3s ease-out infinite',
-                      }}
+                  {/* Phone body */}
+                  <div className="relative flex flex-col items-center px-5 sm:px-6 pt-6 pb-6">
+                    {/* dot-grid texture */}
+                    <span
+                      className="absolute inset-0 opacity-60 pointer-events-none bg-[radial-gradient(#E2E8F0_1px,transparent_1px)] [background-size:18px_18px]"
+                      aria-hidden="true"
                     />
-                    {/* Hub core */}
-                    <circle cx="280" cy="158" r="46" fill="#C61A1A" />
-                    <rect x="260" y="140" width="40" height="30" rx="5" fill="none" stroke="#FFFFFF" strokeWidth="2.5" />
-                    <path d="M261 145 L280 161 L299 145" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                    <text x="280" y="224" textAnchor="middle" fontSize="10" fontWeight="800" fill="#64748B" letterSpacing="1.5">RESPONSE DESK</text>
-                    <text x="280" y="240" textAnchor="middle" fontSize="9" fontWeight="800" fill="#C61A1A" letterSpacing="2">24–48H</text>
 
-                    {/* Channel connectors + nodes */}
-                    {DESK_CHANNELS.map((ch) => (
-                      <g key={ch.label}>
-                        <line x1={ch.x1} y1={ch.y1} x2="386" y2={ch.cy} stroke="#E2E8F0" strokeWidth="2" />
-                        <line x1={ch.x1} y1={ch.y1} x2="386" y2={ch.cy} stroke="#C61A1A" strokeWidth="2" strokeDasharray="10 8" className="dz-flow" opacity="0.5" />
-                        <path d={`M383 ${ch.cy - 5} L390 ${ch.cy} L383 ${ch.cy + 5}`} fill="none" stroke="#C61A1A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        <rect x="392" y={ch.cy - 21} width="140" height="42" rx="12" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
-                        <circle cx="412" cy={ch.cy} r="5" fill="#C61A1A" />
-                        <text x="428" y={ch.cy + 4} fontSize="11.5" fontWeight="800" fill="#0F172A" letterSpacing="1">{ch.label}</text>
-                        <path d={`M512 ${ch.cy - 4} L516 ${ch.cy} L512 ${ch.cy + 4}`} fill="none" stroke="#CBD5E1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                      </g>
-                    ))}
-                  </svg>
+                    <div
+                      className={`relative ${call === 'idle' && !reduceMotion ? 'dz-float' : ''}`}
+                    >
+                      {/* ringing halo */}
+                      {call !== 'live' && !reduceMotion && (
+                        <>
+                          <span className="absolute -inset-3 rounded-[2.6rem] border-2 border-[#C61A1A]/35 dz-pulse-ring pointer-events-none" />
+                          <span
+                            className="absolute -inset-3 rounded-[2.6rem] border-2 border-[#C61A1A]/20 dz-pulse-ring pointer-events-none"
+                            style={{ animationDelay: '1.2s' }}
+                          />
+                        </>
+                      )}
+
+                      {/* device */}
+                      <div className="relative w-[156px] sm:w-[168px] h-[300px] sm:h-[320px] rounded-[2.2rem] bg-[#18181B] border border-white/10 p-2.5 shadow-[0_30px_60px_-25px_rgba(15,23,42,0.55)]">
+                        <div className="flex h-full flex-col overflow-hidden rounded-[1.6rem] bg-white">
+                          {/* status bar */}
+                          <div className="flex items-center justify-between px-3.5 pt-2.5 pb-1 text-[8px] font-extrabold text-slate-400 tabular-nums">
+                            <span>9:41</span>
+                            <span className="flex items-center gap-1" aria-hidden="true">
+                              <span className="flex h-2 items-end gap-px">
+                                {[3, 5, 7, 9].map((h) => (
+                                  <span
+                                    key={h}
+                                    className="w-[2px] rounded-sm bg-slate-400"
+                                    style={{ height: h }}
+                                  />
+                                ))}
+                              </span>
+                              <span className="relative h-1.5 w-3.5 rounded-[2px] border border-slate-400">
+                                <span className="absolute inset-[1px] right-[3px] rounded-[1px] bg-slate-400" />
+                              </span>
+                            </span>
+                          </div>
+
+                          {/* call view */}
+                          <div className="flex flex-1 flex-col items-center justify-center px-3 text-center">
+                            {/* avatar */}
+                            <span
+                              className={`relative flex h-12 w-12 items-center justify-center rounded-full ${
+                                call === 'live'
+                                  ? 'bg-[#C61A1A] text-white'
+                                  : 'border border-red-100 bg-red-50 text-[#C61A1A]'
+                              }`}
+                            >
+                              <Phone className="h-5 w-5" />
+                              {call === 'live' && !reduceMotion && (
+                                <span className="absolute inset-0 rounded-full border-2 border-[#C61A1A]/50 dz-pulse-ring" />
+                              )}
+                            </span>
+
+                            <span className="mt-2.5 text-[13px] font-extrabold leading-tight text-slate-900">
+                              Digivibz Growth Team
+                            </span>
+                            <span className="mt-0.5 text-[9px] font-bold uppercase tracking-[0.16em] text-slate-400">
+                              {call === 'live'
+                                ? 'Connected · strategy call'
+                                : call === 'connecting'
+                                  ? 'Connecting…'
+                                  : 'Free growth line'}
+                            </span>
+
+                            {/* waveform */}
+                            <span
+                              className="mt-3.5 flex h-6 items-end gap-[3px]"
+                              aria-hidden="true"
+                            >
+                              {CALL_WAVE.map((h, i) => (
+                                <motion.span
+                                  key={i}
+                                  className="w-[3px] rounded-full bg-[#C61A1A]"
+                                  style={{ height: `${h}%`, transformOrigin: 'bottom' }}
+                                  animate={
+                                    call === 'live' && !reduceMotion
+                                      ? { scaleY: [0.4, 1, 0.45] }
+                                      : { scaleY: 0.55 }
+                                  }
+                                  transition={
+                                    call === 'live' && !reduceMotion
+                                      ? {
+                                          duration: 0.85 + i * 0.06,
+                                          repeat: Infinity,
+                                          repeatType: 'mirror',
+                                          ease: 'easeInOut',
+                                        }
+                                      : { duration: 0.25 }
+                                  }
+                                />
+                              ))}
+                            </span>
+
+                            {/* call clock */}
+                            <span className="mt-1 text-[11px] font-bold tabular-nums text-slate-500">
+                              {callClock}
+                            </span>
+
+                            {/* action button */}
+                            <button
+                              type="button"
+                              onClick={toggleCall}
+                              aria-label={call === 'live' ? 'End call' : 'Connect call'}
+                              className={`mt-4 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full transition-colors active:scale-95 ${
+                                call === 'live'
+                                  ? 'bg-[#18181B] text-white hover:bg-black'
+                                  : `bg-[#C61A1A] text-white hover:bg-[#9E1414]${
+                                      call === 'idle' && !reduceMotion ? ' dz-glow-pulse' : ''
+                                    }`
+                              }`}
+                            >
+                              {call === 'live' ? (
+                                <PhoneOff className="h-5 w-5" />
+                              ) : (
+                                <Phone className="h-5 w-5" />
+                              )}
+                            </button>
+                            <span className="mt-1.5 text-[8px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                              {call === 'live'
+                                ? 'End call'
+                                : call === 'connecting'
+                                  ? 'Ringing…'
+                                  : 'Tap to connect'}
+                            </span>
+                          </div>
+
+                          {/* home indicator */}
+                          <div className="flex justify-center pb-2">
+                            <span className="h-1 w-16 rounded-full bg-slate-200" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
                   {/* Stats strip */}
                   <div className="grid grid-cols-3 divide-x divide-slate-100 border-t border-slate-100 bg-slate-50/60">

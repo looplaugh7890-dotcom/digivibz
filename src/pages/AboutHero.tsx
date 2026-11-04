@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { ArrowRight, TrendingUp } from 'lucide-react';
 import { CountUp } from '../components/CountUp';
@@ -7,17 +7,27 @@ interface AboutHeroProps {
   onOpenAudit: () => void;
 }
 
-/** The five stages orbiting the engine core, mirrored in the strip under the schematic. */
-const ENGINE_STAGES = ['Discover', 'Design', 'Develop', 'Deploy', 'Detect'];
-
-/** Positions of the 5 stage nodes on the orbit ring (center 280,158 / r 84). */
-const STAGE_NODES = [
-  { x: 280, y: 74 },
-  { x: 359.9, y: 132 },
-  { x: 329.4, y: 225.9 },
-  { x: 230.6, y: 225.9 },
-  { x: 200.1, y: 132 },
+/** Trailing-12-month client profit series ($K) behind the hero ledger. */
+const PROFIT_MONTHS = [
+  { m: 'M1', v: 42 },
+  { m: 'M2', v: 55 },
+  { m: 'M3', v: 51 },
+  { m: 'M4', v: 68 },
+  { m: 'M5', v: 84 },
+  { m: 'M6', v: 79 },
+  { m: 'M7', v: 96 },
+  { m: 'M8', v: 112 },
+  { m: 'M9', v: 108 },
+  { m: 'M10', v: 131 },
+  { m: 'M11', v: 147 },
+  { m: 'M12', v: 168 },
 ];
+
+/** Peak monthly value — every bar height is scaled against it. */
+const PROFIT_MAX = 168;
+
+/** Share of the chart height the peak bar uses (headroom for the callout). */
+const BAR_SCALE = 88;
 
 const ENGINE_STATS = [
   { value: '5+', label: 'Years' },
@@ -26,10 +36,11 @@ const ENGINE_STATS = [
 ];
 
 /**
- * About hero — left column is the copy, right column is the animated
- * "Growth Engine" schematic: marketing spend enters the 5D core (five
- * stages orbiting a red reactor) and leaves as predictable revenue.
- * Same motive as the page: growth is engineered, not gambled.
+ * About hero — left column is the copy, right column is an interactive
+ * profit ledger: twelve months of client-profit bars rise on scroll, a
+ * red trend line draws across their tops, and hovering (or tapping) any
+ * bar reveals that month's figure. Same motive as the page: growth is
+ * engineered, not gambled.
  */
 export const AboutHero: React.FC<AboutHeroProps> = ({ onOpenAudit }) => {
   const reduceMotion = useReducedMotion();
@@ -50,8 +61,15 @@ export const AboutHero: React.FC<AboutHeroProps> = ({ onOpenAudit }) => {
     transition: { duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] as const },
   });
 
-  const spin = (duration: number) =>
-    reduceMotion ? undefined : { animation: `dz-orbit ${duration}s linear infinite`, transformOrigin: '280px 158px' };
+  const [hoverBar, setHoverBar] = useState<number | null>(null);
+  const activeBar = hoverBar ?? PROFIT_MONTHS.length - 1;
+
+  /** Trend polyline through the bar tops, in 0–100 chart coordinates. */
+  const trendPath = PROFIT_MONTHS.map((p, i) => {
+    const x = ((i + 0.5) / PROFIT_MONTHS.length) * 100;
+    const y = 100 - (p.v / PROFIT_MAX) * BAR_SCALE;
+    return `${i === 0 ? 'M' : 'L'}${x.toFixed(2)} ${y.toFixed(2)}`;
+  }).join(' ');
 
   return (
     <section id="about-hero" className="relative pt-6 pb-12 md:pt-8 md:pb-14 overflow-hidden bg-white">
@@ -129,7 +147,7 @@ export const AboutHero: React.FC<AboutHeroProps> = ({ onOpenAudit }) => {
           </div>
 
           {/* ---------------------------------------------------------- */}
-          {/* Right column: the Growth Engine schematic                    */}
+          {/* Right column: interactive profit ledger                     */}
           {/* ---------------------------------------------------------- */}
           <div className="lg:col-span-6 xl:col-span-6 flex flex-col items-center w-full pt-2 lg:pt-0">
             <motion.div
@@ -138,14 +156,14 @@ export const AboutHero: React.FC<AboutHeroProps> = ({ onOpenAudit }) => {
               transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
               className="w-full"
             >
-              {/* Engine panel */}
+              {/* Ledger panel */}
               <div className="rounded-3xl bg-white border border-slate-200 shadow-[0_20px_60px_-30px_rgba(15,23,42,0.25)] overflow-hidden">
                 {/* Panel header */}
                 <div className="flex items-center justify-between px-5 sm:px-6 pt-5">
                   <div className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-[#C61A1A] animate-pulse" />
                     <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500">
-                      The Growth Engine
+                      Profit Ledger
                     </span>
                   </div>
                   <span className="text-[10px] font-bold uppercase tracking-widest text-[#C61A1A] bg-red-50 border border-red-200 px-2.5 py-1 rounded-full">
@@ -153,65 +171,163 @@ export const AboutHero: React.FC<AboutHeroProps> = ({ onOpenAudit }) => {
                   </span>
                 </div>
 
-                {/* Schematic */}
-                <svg viewBox="0 0 560 300" className="w-full select-none" role="img" aria-label="Schematic: marketing spend enters the 5D Growth Engine and leaves as predictable revenue">
-                  {/* Input connector: spend → core */}
-                  <line x1="112" y1="158" x2="192" y2="158" stroke="#E2E8F0" strokeWidth="2" />
-                  <line x1="112" y1="158" x2="192" y2="158" stroke="#C61A1A" strokeWidth="2" strokeDasharray="10 8" className="dz-flow" opacity="0.5" />
-                  <path d="M188 152 L196 158 L188 164" fill="none" stroke="#C61A1A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                {/* Headline figure */}
+                <div className="flex flex-wrap items-end justify-between gap-3 px-5 sm:px-6 pt-4">
+                  <div>
+                    <span className="block text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                      Profits generated
+                    </span>
+                    <span className="mt-1 block text-3xl sm:text-4xl font-extrabold text-slate-900 tabular-nums leading-none">
+                      $<CountUp value="1.14M" />
+                    </span>
+                  </div>
+                  <span className="inline-flex items-center gap-1 rounded-full border border-red-100 bg-red-50 px-2.5 py-1 text-[11px] font-extrabold text-[#C61A1A] tabular-nums">
+                    <TrendingUp className="w-3.5 h-3.5" />
+                    300% M1 → M12
+                  </span>
+                </div>
 
-                  {/* Output connector: core → revenue */}
-                  <line x1="368" y1="158" x2="448" y2="158" stroke="#E2E8F0" strokeWidth="2" />
-                  <line x1="368" y1="158" x2="448" y2="158" stroke="#C61A1A" strokeWidth="2" strokeDasharray="10 8" className="dz-flow" opacity="0.5" />
-                  <path d="M444 152 L452 158 L444 164" fill="none" stroke="#C61A1A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                {/* Interactive bar chart */}
+                <div className="px-5 sm:px-6 pt-5 pb-1">
+                  <div className="relative h-36 sm:h-44">
+                    {/* gridlines */}
+                    {[25, 50, 75].map((g) => (
+                      <span
+                        key={g}
+                        className="absolute left-0 right-0 border-t border-slate-100"
+                        style={{ top: `${g}%` }}
+                        aria-hidden="true"
+                      />
+                    ))}
 
-                  {/* Input node: scattered spend */}
-                  <rect x="20" y="120" width="92" height="76" rx="16" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
-                  <circle cx="48" cy="146" r="4.5" fill="#94A3B8" />
-                  <circle cx="70" cy="158" r="4.5" fill="#CBD5E1" />
-                  <circle cx="52" cy="172" r="4.5" fill="#94A3B8" opacity="0.6" />
-                  <circle cx="82" cy="140" r="3" fill="#CBD5E1" opacity="0.8" />
-                  <text x="66" y="216" textAnchor="middle" className="dz-engine-label" fontSize="10" fontWeight="700" fill="#64748B" letterSpacing="1">MARKETING</text>
-                  <text x="66" y="230" textAnchor="middle" className="dz-engine-label" fontSize="10" fontWeight="700" fill="#64748B" letterSpacing="1">SPEND</text>
+                    {/* trend line */}
+                    {reduceMotion ? (
+                      <svg
+                        viewBox="0 0 100 100"
+                        preserveAspectRatio="none"
+                        className="absolute inset-0 h-full w-full"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d={trendPath}
+                          fill="none"
+                          stroke="#C61A1A"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          vectorEffect="non-scaling-stroke"
+                        />
+                      </svg>
+                    ) : (
+                      <svg
+                        viewBox="0 0 100 100"
+                        preserveAspectRatio="none"
+                        className="absolute inset-0 h-full w-full"
+                        aria-hidden="true"
+                      >
+                        <motion.path
+                          d={trendPath}
+                          fill="none"
+                          stroke="#C61A1A"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          vectorEffect="non-scaling-stroke"
+                          initial={{ pathLength: 0 }}
+                          whileInView={{ pathLength: 1 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 1.1, delay: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                        />
+                      </svg>
+                    )}
 
-                  {/* Output node: predictable revenue */}
-                  <rect x="448" y="120" width="92" height="76" rx="16" fill="#C61A1A" />
-                  <path d="M494 174 L494 146 M484 156 L494 146 L504 156" fill="none" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-                  <text x="494" y="216" textAnchor="middle" className="dz-engine-label" fontSize="10" fontWeight="700" fill="#64748B" letterSpacing="1">PREDICTABLE</text>
-                  <text x="494" y="230" textAnchor="middle" className="dz-engine-label" fontSize="10" fontWeight="700" fill="#64748B" letterSpacing="1">REVENUE</text>
-
-                  {/* Orbit ring */}
-                  <circle cx="280" cy="158" r="84" fill="none" stroke="#E2E8F0" strokeWidth="1.5" />
-                  <g style={spin(26)}>
-                    <circle cx="280" cy="158" r="84" fill="none" stroke="#C61A1A" strokeWidth="1.5" strokeDasharray="3 10" opacity="0.45" />
-                  </g>
-
-                  {/* Core */}
-                  <circle cx="280" cy="158" r="44" fill="#C61A1A" />
-                  <text x="280" y="160" textAnchor="middle" fontSize="26" fontWeight="800" fill="#FFFFFF">5D</text>
-                  <text x="280" y="178" textAnchor="middle" fontSize="8.5" fontWeight="700" fill="rgba(255,255,255,0.85)" letterSpacing="2.5">ENGINE</text>
-
-                  {/* Stage nodes on the ring */}
-                  {STAGE_NODES.map((node, i) => (
-                    <g key={ENGINE_STAGES[i]}>
-                      <circle cx={node.x} cy={node.y} r="15" fill="#FFFFFF" stroke="#C61A1A" strokeWidth="2" />
-                      <text x={node.x} y={node.y + 4} textAnchor="middle" fontSize="11" fontWeight="800" fill="#C61A1A">
-                        {i + 1}
-                      </text>
-                    </g>
-                  ))}
-                </svg>
-
-                {/* Stage legend strip */}
-                <div className="grid grid-cols-5 divide-x divide-slate-100 border-t border-slate-100">
-                  {ENGINE_STAGES.map((stage, i) => (
-                    <div key={stage} className="py-2.5 px-1 text-center">
-                      <div className="text-[10px] font-extrabold text-[#C61A1A] tabular-nums">0{i + 1}</div>
-                      <div className="mt-0.5 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-600 truncate">
-                        {stage}
-                      </div>
+                    {/* bars */}
+                    <div className="absolute inset-0 flex items-end gap-1.5">
+                      {PROFIT_MONTHS.map((p, i) => {
+                        const delta =
+                          i > 0
+                            ? Math.round(
+                                ((p.v - PROFIT_MONTHS[i - 1].v) / PROFIT_MONTHS[i - 1].v) * 100,
+                              )
+                            : null;
+                        return (
+                          <button
+                            key={p.m}
+                            type="button"
+                            aria-label={`${p.m}: $${p.v}K profit`}
+                            onMouseEnter={() => setHoverBar(i)}
+                            onMouseLeave={() => setHoverBar(null)}
+                            onFocus={() => setHoverBar(i)}
+                            onBlur={() => setHoverBar(null)}
+                            onClick={() => setHoverBar(i)}
+                            className={`group relative flex h-full flex-1 cursor-pointer items-end outline-none ${
+                              activeBar === i ? 'z-10' : 'z-0'
+                            }`}
+                          >
+                            <motion.span
+                              initial={reduceMotion ? false : { scaleY: 0 }}
+                              whileInView={{ scaleY: 1 }}
+                              viewport={{ once: true }}
+                              transition={{
+                                delay: 0.3 + i * 0.05,
+                                duration: 0.55,
+                                ease: [0.22, 1, 0.36, 1],
+                              }}
+                              style={{
+                                height: `${(p.v / PROFIT_MAX) * BAR_SCALE}%`,
+                                transformOrigin: 'bottom',
+                              }}
+                              className={`w-full rounded-t-md transition-colors duration-200 ${
+                                activeBar === i
+                                  ? 'bg-[#C61A1A]'
+                                  : 'bg-[#C61A1A]/25 group-hover:bg-[#C61A1A]/55'
+                              }`}
+                            />
+                            {activeBar === i && (
+                              <span
+                                className={`absolute bottom-full mb-2 whitespace-nowrap ${
+                                  i === 0
+                                    ? 'left-0'
+                                    : i === PROFIT_MONTHS.length - 1
+                                      ? 'right-0'
+                                      : 'left-1/2 -translate-x-1/2'
+                                }`}
+                              >
+                                <motion.span
+                                  initial={{ opacity: 0, y: 5 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ duration: 0.18 }}
+                                  className="block rounded-lg bg-[#18181B] px-2.5 py-1.5 text-[10px] font-extrabold text-white tabular-nums shadow-lg"
+                                >
+                                  {p.m} · ${p.v}K
+                                  {delta !== null && (
+                                    <span className="ml-1 text-red-400">
+                                      {delta >= 0 ? '↑' : '↓'}
+                                      {Math.abs(delta)}%
+                                    </span>
+                                  )}
+                                </motion.span>
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
                     </div>
-                  ))}
+                  </div>
+
+                  {/* month axis */}
+                  <div className="mt-2 flex gap-1.5">
+                    {PROFIT_MONTHS.map((p, i) => (
+                      <span
+                        key={p.m}
+                        className={`flex-1 text-center text-[8px] font-bold uppercase tracking-wide sm:text-[9px] ${
+                          activeBar === i ? 'text-[#C61A1A]' : 'text-slate-400'
+                        }`}
+                      >
+                        {p.m}
+                      </span>
+                    ))}
+                  </div>
                 </div>
 
                 {/* Proof strip */}

@@ -8,19 +8,15 @@ import {
   Compass,
   Crosshair,
   Facebook,
-  Heart,
   Instagram,
   Linkedin,
   LineChart,
-  MessageCircle,
   Palette,
   PenTool,
   Repeat,
   Rocket,
   Search,
-  Share2,
   Target,
-  TrendingUp,
 } from 'lucide-react';
 import { CountUp } from '../CountUp';
 import {
@@ -70,54 +66,74 @@ export const PlatformGlyph: React.FC<{ id: SmmPlatformId; className?: string }> 
 };
 
 /* ==========================================================================
-   1. HERO ENGINE — posts flow into the 5D engine, engine emits revenue.
-   HTML cards + SVG connectors so every column stays crisp at any width.
+   1. HERO ORBIT — five platforms and five disciplines circling the 5D
+   engine. Same radial language as the home wheel and the services
+   capability map: dashed tracks, counter-spinning chips, reactor hub.
    ========================================================================== */
 
-const FEED_POSTS = [
-  { bars: ['w-4/5', 'w-3/5'], likes: '1.2k', delay: '0s' },
-  { bars: ['w-3/4', 'w-1/2'], likes: '847', delay: '1.4s' },
-  { bars: ['w-4/5', 'w-2/3'], likes: '2.4k', delay: '2.8s' },
+/** Outer ring — where the work publishes and amplifies. */
+const ORBIT_PLATFORMS: SmmPlatformId[] = ['facebook', 'instagram', 'twitter', 'linkedin', 'tiktok'];
+
+/** Inner ring — the disciplines the engine runs on every platform. */
+const ORBIT_DISCIPLINES = ['Strategy', 'Content', 'Paid Ads', 'Community', 'Analytics'];
+
+/** Readout strip under the orbit — the numbers the system moves. */
+const ORBIT_READOUT = [
+  { label: 'Reach', value: '3X' },
+  { label: 'Engagement', value: '4.8%' },
+  { label: 'Leads / mo', value: '120+' },
 ];
-
-const LEAD_BARS = [34, 48, 42, 66, 92];
-
-/** Dashed vertical link with a falling particle (mobile stacking only). */
-const MobileFlow: React.FC = () => (
-  <div className="md:hidden flex justify-center py-0.5" aria-hidden="true">
-    <span className="relative block w-0 h-7 border-l border-dashed border-slate-300">
-      <span
-        className="absolute -left-[3.5px] top-0 w-1.5 h-1.5 rounded-full bg-[#C61A1A]"
-        style={{ animation: 'dz-drop 1.8s linear infinite' }}
-      />
-    </span>
-  </div>
-);
 
 export const SocialEngineHero: React.FC = () => {
   const reduce = useReducedMotion();
+  const spin = (name: string) => (reduce ? '' : name);
 
-  const connector = (className: string, paths: string[]) => (
-    <svg
-      viewBox="0 0 60 190"
-      className={`${className} shrink-0 hidden md:block`}
-      fill="none"
-      aria-hidden="true"
-    >
-      {paths.map((d, i) => (
-        <path
-          key={i}
-          d={d}
-          stroke="#C61A1A"
-          strokeWidth="1.6"
-          strokeDasharray="6 6"
-          strokeLinecap="round"
-          opacity="0.5"
-          className={reduce ? undefined : 'dz-flow'}
-        />
-      ))}
-    </svg>
+  /**
+   * One orbiting ring: rotate the frame to `angle`, un-tilt the chip, then
+   * counter-spin it so labels stay upright while the ring rotates — the
+   * same technique as the services capability map.
+   */
+  const orbitRing = (
+    inset: string,
+    ringSpin: string,
+    chipSpin: string,
+    chips: React.ReactNode[],
+    offset = 0,
+  ) => (
+    <div className={`absolute ${inset} ${spin(ringSpin)}`}>
+      {chips.map((chip, i) => {
+        const angle = (360 / chips.length) * i + offset;
+        return (
+          <div key={i} className="absolute inset-0" style={{ transform: `rotate(${angle}deg)` }}>
+            <div
+              className="absolute left-1/2 top-0"
+              style={{ transform: `translate(-50%, -50%) rotate(${-angle}deg)` }}
+            >
+              <div className={spin(chipSpin)}>{chip}</div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
+
+  const platformChips = ORBIT_PLATFORMS.map((id) => (
+    <span
+      key={id}
+      className="flex w-11 h-11 sm:w-12 sm:h-12 items-center justify-center rounded-2xl bg-white border border-slate-200 shadow-[0_10px_24px_-14px_rgba(15,23,42,0.45)]"
+    >
+      <PlatformGlyph id={id} className="w-5 h-5 text-[#C61A1A]" />
+    </span>
+  ));
+
+  const disciplineChips = ORBIT_DISCIPLINES.map((name) => (
+    <span
+      key={name}
+      className="flex h-7 items-center whitespace-nowrap rounded-full bg-white border border-slate-200 px-3 text-[9px] font-extrabold uppercase tracking-[0.12em] text-slate-600 shadow-[0_8px_20px_-14px_rgba(15,23,42,0.4)]"
+    >
+      {name}
+    </span>
+  ));
 
   return (
     <div className="w-full rounded-3xl border border-slate-200 bg-white overflow-hidden shadow-[0_30px_70px_-42px_rgba(15,23,42,0.45)]">
@@ -133,149 +149,74 @@ export const SocialEngineHero: React.FC = () => {
       </div>
 
       <div className="p-4 sm:p-5">
-        <div className="flex flex-col md:flex-row md:items-center gap-1">
-          {/* ---------------------------------------------------- feed posts */}
-          <div className="flex-1 min-w-0 space-y-2.5">
-            <span className="block text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1.5">
-              Content that earns attention
+        {/* ------------------------------------------------------ orbit map */}
+        <div className="relative w-full max-w-[430px] aspect-square mx-auto" aria-hidden="true">
+          {/* soft red glow behind the hub */}
+          <div
+            className="absolute inset-[16%] rounded-full blur-2xl opacity-70 pointer-events-none"
+            style={{
+              background: 'radial-gradient(circle, rgba(198,26,26,0.16) 0%, transparent 70%)',
+            }}
+          />
+
+          {/* corner captions */}
+          <span className="absolute left-0 top-1 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border border-slate-200 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-slate-500 shadow-xs">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#C61A1A] animate-pulse" />
+            Always On
+          </span>
+          <span className="absolute right-0 bottom-1 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-50 border border-red-200 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-[#C61A1A] shadow-xs">
+            5 Platforms
+          </span>
+
+          {/* ring tracks */}
+          <div className="absolute inset-[8%] rounded-full border border-dashed border-slate-200" />
+          <div className="absolute inset-[26%] rounded-full border border-dashed border-red-100" />
+          <div
+            className={`absolute inset-[17%] rounded-full border border-dashed border-slate-100 ${spin(
+              'dz-spin',
+            )}`}
+          />
+
+          {/* outer orbit: platform chips */}
+          {orbitRing('inset-[8%]', 'dz-spin', 'dz-spin-rev', platformChips)}
+
+          {/* inner orbit: discipline pills, opposite direction */}
+          {orbitRing('inset-[26%]', 'dz-spin-back', 'dz-spin-back-rev', disciplineChips, 18)}
+
+          {/* pulse halo */}
+          {!reduce && (
+            <div className="absolute inset-0 m-auto w-[34%] h-[34%] rounded-full border-2 border-[#C61A1A]/45 dz-pulse-ring pointer-events-none" />
+          )}
+
+          {/* reactor hub */}
+          <div className="absolute inset-0 m-auto w-[34%] h-[34%] rounded-full bg-[#18181B] border border-[#C61A1A]/70 text-white flex flex-col items-center justify-center text-center shadow-[0_24px_60px_-18px_rgba(198,26,26,0.55)]">
+            <span className="text-xl sm:text-3xl font-extrabold leading-none tracking-tight">
+              5<span className="text-[#C61A1A]">d</span>
             </span>
-            {FEED_POSTS.map((post, i) => (
-              <div
-                key={i}
-                className={`rounded-xl border border-slate-200 bg-white p-2.5 shadow-xs ${
-                  reduce ? '' : 'dz-float'
-                }`}
-                style={reduce ? undefined : { animationDelay: post.delay }}
-              >
-                <div className="flex items-center gap-2">
-                  <span className="w-6 h-6 rounded-full bg-[#C61A1A]/10 text-[#C61A1A] flex items-center justify-center shrink-0">
-                    <Share2 className="w-3 h-3" />
-                  </span>
-                  <span className="flex-1 min-w-0 space-y-1">
-                    <span className={`block h-1.5 ${post.bars[0]} rounded-full bg-slate-200`} />
-                    <span className={`block h-1.5 ${post.bars[1]} rounded-full bg-slate-100`} />
-                  </span>
-                </div>
-                <div className="mt-2 flex items-center gap-3 text-slate-400">
-                  <span className="flex items-center gap-1 text-[10px] font-extrabold text-[#C61A1A] tabular-nums">
-                    <Heart className="w-3 h-3 fill-current" />
-                    {post.likes}
-                  </span>
-                  <MessageCircle className="w-3 h-3" />
-                  <Share2 className="w-3 h-3" />
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* ----------------------------------------------------- connectors */}
-          <div className="hidden md:flex md:w-10 lg:w-14 justify-center">
-            {connector('w-10 lg:w-14', [
-              'M0 34 C 26 34 34 95 60 95',
-              'M0 95 H 60',
-              'M0 156 C 26 156 34 95 60 95',
-            ])}
-          </div>
-          <MobileFlow />
-
-          {/* -------------------------------------------------------- engine */}
-          <div className="shrink-0 flex justify-center py-2 md:py-0">
-            <div className="relative w-32 h-32 lg:w-40 lg:h-40">
-              <div
-                className={`absolute inset-0 rounded-full border border-dashed border-slate-300 ${
-                  reduce ? '' : 'dz-spin'
-                }`}
-              />
-              {!reduce && (
-                <div className="absolute inset-[8%] rounded-full border-2 border-[#C61A1A]/40 dz-pulse-ring" />
-              )}
-              <div className="absolute inset-[16%] rounded-full border-2 border-[#C61A1A]/25 bg-red-50/50" />
-              <div className="absolute inset-[26%] rounded-full bg-[#18181B] text-white flex flex-col items-center justify-center text-center shadow-[0_18px_40px_-16px_rgba(198,26,26,0.6)]">
-                <span className="text-2xl lg:text-3xl font-extrabold leading-none tracking-tight">
-                  5<span className="text-[#C61A1A]">d</span>
-                </span>
-                <span className="mt-1 text-[7px] lg:text-[8px] font-bold uppercase tracking-[0.16em] text-white/70">
-                  Growth Engine
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* ----------------------------------------------------- connectors */}
-          <div className="hidden md:flex md:w-10 lg:w-14 justify-center">
-            {connector('w-10 lg:w-14', [
-              'M0 95 C 26 95 34 34 60 34',
-              'M0 95 H 60',
-              'M0 95 C 26 95 34 156 60 156',
-            ])}
-          </div>
-          <MobileFlow />
-
-          {/* ------------------------------------------------------- outputs */}
-          <div className="flex-1 min-w-0 space-y-2.5">
-            <span className="block text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1.5">
-              Attention that converts
+            <span className="mt-1 text-[7px] sm:text-[8px] font-bold uppercase tracking-[0.14em] text-white/75">
+              Social Engine
             </span>
-
-            <div className="rounded-xl border border-[#C61A1A] bg-[#C61A1A] p-3 shadow-[0_14px_30px_-16px_rgba(198,26,26,0.65)]">
-              <div className="flex items-center justify-between">
-                <span className="text-[9px] font-bold uppercase tracking-widest text-white/75">
-                  Revenue
-                </span>
-                <TrendingUp className="w-3.5 h-3.5 text-white" />
-              </div>
-              <div className="mt-1 text-2xl lg:text-3xl font-extrabold text-white tabular-nums leading-none">
-                <CountUp value="3X" />
-              </div>
-            </div>
-
-            <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-xs">
-              <div className="flex items-center justify-between">
-                <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400">
-                  Qualified leads
-                </span>
-                <span className="text-[10px] font-extrabold text-[#C61A1A]">RISING</span>
-              </div>
-              <div className="mt-2 flex items-end gap-1.5 h-9">
-                {LEAD_BARS.map((h, i) => (
-                  <motion.span
-                    key={i}
-                    initial={reduce ? false : { scaleY: 0 }}
-                    whileInView={{ scaleY: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.5 + i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                    style={{ height: `${h}%`, transformOrigin: 'bottom' }}
-                    className={`flex-1 rounded-sm ${i === LEAD_BARS.length - 1 ? 'bg-[#C61A1A]' : 'bg-[#C61A1A]/35'}`}
-                  />
-                ))}
-              </div>
-            </div>
-
-            <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-xs">
-              <div className="flex items-center justify-between">
-                <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400">
-                  Brand trust
-                </span>
-                <span className="flex gap-1" aria-hidden="true">
-                  {[0, 1, 2, 3].map((d) => (
-                    <span
-                      key={d}
-                      className="w-1.5 h-1.5 rounded-full bg-[#C61A1A]"
-                      style={
-                        reduce
-                          ? undefined
-                          : { animation: 'dz-glow-pulse 2.4s ease-out infinite', animationDelay: `${d * 0.3}s` }
-                      }
-                    />
-                  ))}
-                  <span className="w-1.5 h-1.5 rounded-full bg-slate-200" />
-                </span>
-              </div>
-              <p className="mt-1.5 text-[11px] font-semibold text-slate-600">
-                Trust compounds with every consistent post.
-              </p>
-            </div>
+            <span className="hidden sm:block mt-1 pt-1 w-[64%] border-t border-white/25 text-[7px] font-semibold uppercase tracking-[0.1em] text-white/60">
+              5 Disciplines
+            </span>
           </div>
+        </div>
+
+        {/* ------------------------------------------------------ readout */}
+        <div className="mt-4 grid grid-cols-3 gap-2 border-t border-slate-100 pt-3.5">
+          {ORBIT_READOUT.map((metric) => (
+            <div
+              key={metric.label}
+              className="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2"
+            >
+              <span className="block text-[8px] font-bold uppercase tracking-[0.14em] text-slate-400">
+                {metric.label}
+              </span>
+              <span className="mt-0.5 block text-lg sm:text-xl font-extrabold text-[#18181B] tabular-nums leading-none">
+                <CountUp value={metric.value} />
+              </span>
+            </div>
+          ))}
         </div>
       </div>
 
