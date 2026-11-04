@@ -27,9 +27,10 @@ import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
 import { TermsPage } from './pages/TermsPage';
 import { MarketingDisclaimerPage } from './pages/MarketingDisclaimerPage';
 import { LegalNoticePage } from './pages/LegalNoticePage';
+import { SocialMediaServicePage } from './pages/SocialMediaServicePage';
 import { CaseStudy } from './types';
 
-type Route = 'home' | 'about' | 'contact' | 'portfolio' | 'services' | 'caseStudy' | 'admin' | 'refundPolicy' | 'privacyPolicy' | 'terms' | 'disclaimer' | 'legalNotice';
+type Route = 'home' | 'about' | 'contact' | 'portfolio' | 'services' | 'service' | 'caseStudy' | 'admin' | 'refundPolicy' | 'privacyPolicy' | 'terms' | 'disclaimer' | 'legalNotice';
 
 /** Hash routes (vs. home-page anchors like `#services`). */
 const routeFromHash = (hash: string): Route =>
@@ -41,8 +42,10 @@ const routeFromHash = (hash: string): Route =>
         ? 'portfolio'
         : hash === '#/services' || hash.startsWith('#/services?')
           ? 'services'
-          : hash.startsWith('#/case-study/')
-            ? 'caseStudy'
+          : hash.startsWith('#/service/')
+            ? 'service'
+            : hash.startsWith('#/case-study/')
+              ? 'caseStudy'
             : hash === '#/admin' || hash.startsWith('#/admin?')
               ? 'admin'
               : hash === '#/refund-policy' || hash.startsWith('#/refund-policy?')
@@ -61,11 +64,19 @@ const routeFromHash = (hash: string): Route =>
 const caseStudySlugFromHash = (hash: string): string =>
   hash.startsWith('#/case-study/') ? hash.slice('#/case-study/'.length).split('?')[0] : '';
 
+/** Slug after `#/service/` (empty string when absent). */
+const serviceSlugFromHash = (hash: string): string =>
+  hash.startsWith('#/service/') ? hash.slice('#/service/'.length).split('?')[0] : '';
+
 export default function App() {
   const [route, setRoute] = useState<Route>(() => routeFromHash(window.location.hash));
   /** Current case-study slug — lets `#/case-study/a` → `#/case-study/b` re-render. */
   const [caseStudySlug, setCaseStudySlug] = useState<string>(() =>
     caseStudySlugFromHash(window.location.hash)
+  );
+  /** Current service slug — `#/service/<slug>` detail pages. */
+  const [serviceSlug, setServiceSlug] = useState<string>(() =>
+    serviceSlugFromHash(window.location.hash)
   );
   /** Section id to scroll to once the home page has rendered (cross-page anchor). */
   const [pendingAnchor, setPendingAnchor] = useState<string | null>(null);
@@ -99,6 +110,10 @@ export default function App() {
           // Entering a case study: sync the slug and start at the top.
           setCaseStudySlug(caseStudySlugFromHash(hash));
           window.scrollTo({ top: 0, behavior: 'instant' });
+        } else if (next === 'service') {
+          // Entering a service detail page: sync the slug and start at the top.
+          setServiceSlug(serviceSlugFromHash(hash));
+          window.scrollTo({ top: 0, behavior: 'instant' });
         } else if (next === 'home') {
           // Landing on the home page from a sub-page: resolve the anchor after render.
           const id = hash.slice(1);
@@ -115,6 +130,13 @@ export default function App() {
           setCaseStudySlug(slug);
           window.scrollTo({ top: 0, behavior: 'instant' });
         }
+      } else if (next === 'service') {
+        // Same route, different service slug (or back/forward between services).
+        const slug = serviceSlugFromHash(hash);
+        if (slug !== serviceSlug) {
+          setServiceSlug(slug);
+          window.scrollTo({ top: 0, behavior: 'instant' });
+        }
       } else if (next === 'home' && hash && hash !== '#/') {
         // Same-page anchor clicks are handled natively by the browser.
         setPendingAnchor(null);
@@ -123,7 +145,7 @@ export default function App() {
 
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);
-  }, [route, caseStudySlug]);
+  }, [route, caseStudySlug, serviceSlug]);
 
   // Scroll to the requested home-section once it exists in the DOM.
   useEffect(() => {
@@ -155,6 +177,13 @@ export default function App() {
               <PortfolioPage onOpenAudit={handleOpenAudit} />
             ) : route === 'services' ? (
               <ServicesPage onOpenAudit={handleOpenAudit} />
+            ) : route === 'service' ? (
+              serviceSlug === 'social-media-marketing' ? (
+                <SocialMediaServicePage onOpenAudit={handleOpenAudit} />
+              ) : (
+                /* Unknown service slug → the catalog, so 404-ish URLs stay useful. */
+                <ServicesPage onOpenAudit={handleOpenAudit} />
+              )
             ) : route === 'caseStudy' ? (
               <CaseStudyPage slug={caseStudySlug} onOpenAudit={handleOpenAudit} />
             ) : route === 'refundPolicy' ? (

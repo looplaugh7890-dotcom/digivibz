@@ -6,6 +6,7 @@ import {
   CONVERGENCE_OUTCOMES,
   CONVERGENCE_SERVICES,
   SERVICE_CATEGORIES,
+  SERVICE_DETAIL_SLUGS,
   SERVICES,
   SERVICES_CTA,
   SERVICES_INTRO,
@@ -355,26 +356,9 @@ export const ServicesPage: React.FC<{ onOpenAudit: () => void }> = ({ onOpenAudi
               {filtered.map((service, index) => {
                 const Icon = service.icon;
                 const number = SERVICES.findIndex((s) => s.slug === service.slug) + 1;
-                return (
-                  <motion.article
-                    key={service.slug}
-                    layout
-                    initial={reduceMotion ? false : { opacity: 0, y: 18 }}
-                    whileInView={{
-                      opacity: 1,
-                      y: 0,
-                      transition: {
-                        duration: 0.5,
-                        ease: [0.22, 1, 0.36, 1],
-                        delay: reduceMotion ? 0 : (index % 3) * 0.06,
-                      },
-                    }}
-                    viewport={{ once: true, margin: '-40px' }}
-                    exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2, ease: 'easeIn' } }}
-                    whileHover={reduceMotion ? undefined : { y: -5 }}
-                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                    className="group relative bg-white rounded-2xl border border-slate-200 p-5 overflow-hidden hover:border-red-300 hover:shadow-[0_24px_50px_-30px_rgba(198,26,26,0.35)] transition-colors duration-300"
-                  >
+                const hasPage = SERVICE_DETAIL_SLUGS.includes(service.slug);
+                const card = (
+                  <>
                     {/* red rail draws across the top on hover */}
                     <span className="absolute top-0 left-0 h-0.5 w-0 bg-[#C61A1A] group-hover:w-full transition-all duration-500" />
 
@@ -398,10 +382,45 @@ export const ServicesPage: React.FC<{ onOpenAudit: () => void }> = ({ onOpenAudi
                       </span>
                       <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-slate-300 group-hover:text-[#C61A1A] transition-colors shrink-0">
                         <span className="w-1 h-1 rounded-full bg-current" />
-                        In System
+                        {hasPage ? 'View Page' : 'In System'}
                       </span>
                     </div>
-                  </motion.article>
+                  </>
+                );
+
+                const cardProps = {
+                  key: service.slug,
+                  layout: true as const,
+                  initial: reduceMotion ? false : { opacity: 0, y: 18 },
+                  whileInView: {
+                    opacity: 1,
+                    y: 0,
+                    transition: {
+                      duration: 0.5,
+                      ease: [0.22, 1, 0.36, 1] as const,
+                      delay: reduceMotion ? 0 : (index % 3) * 0.06,
+                    },
+                  },
+                  viewport: { once: true, margin: '-40px' },
+                  exit: { opacity: 0, scale: 0.95, transition: { duration: 0.2, ease: 'easeIn' as const } },
+                  whileHover: reduceMotion ? undefined : { y: -5 },
+                  transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] as const },
+                  className:
+                    'group relative bg-white rounded-2xl border border-slate-200 p-5 overflow-hidden hover:border-red-300 hover:shadow-[0_24px_50px_-30px_rgba(198,26,26,0.35)] transition-colors duration-300',
+                };
+
+                /* Cards with a detail page become real links; the rest stay put. */
+                return hasPage ? (
+                  <motion.a
+                    {...cardProps}
+                    href={`#/service/${service.slug}`}
+                    aria-label={`View ${service.name} service page`}
+                    className={`${cardProps.className} block cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C61A1A]`}
+                  >
+                    {card}
+                  </motion.a>
+                ) : (
+                  <motion.article {...cardProps}>{card}</motion.article>
                 );
               })}
             </AnimatePresence>
