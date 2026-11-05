@@ -33,6 +33,8 @@ import { ContentWritingServicePage } from './pages/ContentWritingServicePage';
 import { OrmServicePage } from './pages/OrmServicePage';
 
 import { DesignServicePage } from './pages/DesignServicePage';
+
+import { GmbServicePage } from './pages/GmbServicePage';
 import { CaseStudy } from './types';
 
 type Route = 'home' | 'about' | 'contact' | 'portfolio' | 'services' | 'service' | 'caseStudy' | 'admin' | 'refundPolicy' | 'privacyPolicy' | 'terms' | 'disclaimer' | 'legalNotice';
@@ -193,6 +195,8 @@ export default function App() {
                 <OrmServicePage onOpenAudit={handleOpenAudit} />
               ) : serviceSlug === 'graphic-designing' ? (
                 <DesignServicePage onOpenAudit={handleOpenAudit} />
+              ) : serviceSlug === 'google-my-business' ? (
+                <GmbServicePage onOpenAudit={handleOpenAudit} />
               ) : (
                 /* Unknown service slug → the catalog, so 404-ish URLs stay useful. */
                 <ServicesPage onOpenAudit={handleOpenAudit} />

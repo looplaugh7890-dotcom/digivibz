@@ -167,6 +167,7 @@ export const SERVICE_DETAIL_SLUGS: string[] = [
   'content-writing',
   'online-reputation-management',
   'graphic-designing',
+  'google-my-business',
 ];
 
 /** "One system" diagram — inputs on the left, outcomes on the right. */
