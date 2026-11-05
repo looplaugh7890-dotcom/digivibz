@@ -31,6 +31,8 @@ import { SocialMediaServicePage } from './pages/SocialMediaServicePage';
 import { AppDevelopmentServicePage } from './pages/AppDevelopmentServicePage';
 import { ContentWritingServicePage } from './pages/ContentWritingServicePage';
 import { OrmServicePage } from './pages/OrmServicePage';
+
+import { DesignServicePage } from './pages/DesignServicePage';
 import { CaseStudy } from './types';
 
 type Route = 'home' | 'about' | 'contact' | 'portfolio' | 'services' | 'service' | 'caseStudy' | 'admin' | 'refundPolicy' | 'privacyPolicy' | 'terms' | 'disclaimer' | 'legalNotice';
@@ -189,6 +191,8 @@ export default function App() {
                 <ContentWritingServicePage onOpenAudit={handleOpenAudit} />
               ) : serviceSlug === 'online-reputation-management' ? (
                 <OrmServicePage onOpenAudit={handleOpenAudit} />
+              ) : serviceSlug === 'graphic-designing' ? (
+                <DesignServicePage onOpenAudit={handleOpenAudit} />
               ) : (
                 /* Unknown service slug → the catalog, so 404-ish URLs stay useful. */
                 <ServicesPage onOpenAudit={handleOpenAudit} />
