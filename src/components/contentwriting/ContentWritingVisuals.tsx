@@ -42,18 +42,16 @@ const scribble = (x: number, y: number, w: number, seed: number): string => {
   return d;
 };
 
-/** The headline word written first — revealed by a clip that follows the pen. */
-const HEADLINE = { x: 346, y: 158, clipW: 128, penEnd: 464 };
-
-/** Body lines: x, y, width per written line (last one is short). */
+/** Written lines: x, y, width per line (first is a lead line, last is short). */
 const WRITE_LINES = [
+  { x: 346, y: 150, w: 200, sw: 5 },
   { x: 346, y: 192, w: 208, sw: 3.5 },
   { x: 346, y: 230, w: 192, sw: 3.5 },
   { x: 346, y: 268, w: 208, sw: 3.5 },
   { x: 346, y: 306, w: 120, sw: 3.5 },
 ];
 
-/** All five ruled guides (headline included). */
+/** All five ruled guides. */
 const GUIDES = [
   { x: 346, y: 150, w: 210 },
   { x: 346, y: 192, w: 208 },
@@ -73,7 +71,7 @@ const LEFT_LINES = [
 /** Old writing fades toward the bottom — content that disappeared. */
 const OLD_OPACITY = [1, 0.9, 0.7, 0.5, 0.32];
 
-/** Absolute start time for step i (0 = headline): 0.45s + i * 0.9s. */
+/** Absolute start time for step i: 0.45s + i * 0.9s. */
 const stepAt = (i: number) => 0.45 + i * 0.9;
 
 /** Fountain pen, tip at local (0,0), soft page shadow, leaning up-right. */
@@ -134,23 +132,6 @@ export const InkPenBook: React.FC = () => {
     },
   });
 
-  const headlineClip = {
-    hidden: { width: 0 },
-    show: {
-      width: HEADLINE.clipW,
-      transition: { duration: 0.8, delay: stepAt(0), ease: 'easeInOut' as const },
-    },
-  };
-
-  const underlineV = {
-    hidden: { pathLength: 0, opacity: 0 },
-    show: {
-      pathLength: 1,
-      opacity: 1,
-      transition: { duration: 0.5, delay: stepAt(0) + 0.85, ease: [0.22, 1, 0.36, 1] as const },
-    },
-  };
-
   return (
     <motion.div
       className="relative w-full"
@@ -168,7 +149,7 @@ export const InkPenBook: React.FC = () => {
           className="relative w-full h-auto block"
           initial={reduce ? false : 'hidden'}
           animate="show"
-          aria-label="A pen writing the word Growth and red ink lines into an open book"
+          aria-label="A pen writing red ink lines into an open book"
           role="img"
         >
           <defs>
@@ -187,11 +168,6 @@ export const InkPenBook: React.FC = () => {
             <filter id="cw-soft" x="-60%" y="-60%" width="220%" height="220%">
               <feGaussianBlur stdDeviation="2.5" />
             </filter>
-            {!reduce && (
-              <clipPath id="cw-headline">
-                <motion.rect x={HEADLINE.x - 6} y="116" height="58" variants={headlineClip} />
-              </clipPath>
-            )}
           </defs>
 
         {/* shadow */}
@@ -269,27 +245,9 @@ export const InkPenBook: React.FC = () => {
           />
         ))}
 
-        {/* right page — headline word + body lines, each written with the pen */}
+        {/* right page — five ink lines, each written with the pen */}
         {reduce ? (
           <>
-            <text
-              x={HEADLINE.x + 2}
-              y={HEADLINE.y + 2}
-              fontFamily="Georgia, 'Times New Roman', serif"
-              fontStyle="italic"
-              fontWeight="700"
-              fontSize="34"
-              fill="#C61A1A"
-            >
-              Growth.
-            </text>
-            <path
-              d="M 350 174 Q 405 181 466 172"
-              fill="none"
-              stroke="#C61A1A"
-              strokeWidth="3"
-              strokeLinecap="round"
-            />
             {WRITE_LINES.map((l) => (
               <path
                 key={`new-${l.y}`}
@@ -300,33 +258,12 @@ export const InkPenBook: React.FC = () => {
                 strokeLinecap="round"
               />
             ))}
-            <g transform={`translate(${WRITE_LINES[3].x + WRITE_LINES[3].w} ${WRITE_LINES[3].y})`}>
+            <g transform={`translate(${WRITE_LINES[4].x + WRITE_LINES[4].w} ${WRITE_LINES[4].y})`}>
               <PenBody />
             </g>
           </>
         ) : (
           <>
-            <text
-              clipPath="url(#cw-headline)"
-              x={HEADLINE.x + 2}
-              y={HEADLINE.y + 2}
-              fontFamily="Georgia, 'Times New Roman', serif"
-              fontStyle="italic"
-              fontWeight="700"
-              fontSize="34"
-              fill="#C61A1A"
-            >
-              Growth.
-            </text>
-            <motion.path
-              d="M 350 174 Q 405 181 466 172"
-              fill="none"
-              stroke="#C61A1A"
-              strokeWidth="3"
-              strokeLinecap="round"
-              variants={underlineV}
-              aria-hidden="true"
-            />
             {WRITE_LINES.map((l, j) => (
               <motion.path
                 key={`new-${l.y}`}
@@ -335,21 +272,14 @@ export const InkPenBook: React.FC = () => {
                 stroke="#C61A1A"
                 strokeWidth={l.sw}
                 strokeLinecap="round"
-                variants={draw(stepAt(j + 1))}
+                variants={draw(stepAt(j))}
                 aria-hidden="true"
               />
             ))}
-            {/* pens: headline first, then one per body line */}
-            <motion.g
-              variants={pen(HEADLINE.x, HEADLINE.penEnd, HEADLINE.y, stepAt(0))}
-              aria-hidden="true"
-            >
-              <PenBody />
-            </motion.g>
             {WRITE_LINES.map((l, j) => (
               <motion.g
                 key={`pen-${l.y}`}
-                variants={pen(l.x, l.x + l.w, l.y, stepAt(j + 1))}
+                variants={pen(l.x, l.x + l.w, l.y, stepAt(j))}
                 aria-hidden="true"
               >
                 <PenBody />
