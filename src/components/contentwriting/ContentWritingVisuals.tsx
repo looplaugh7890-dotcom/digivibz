@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { ChevronDown } from 'lucide-react';
+import { BookOpen, ChevronDown, Search, TrendingUp } from 'lucide-react';
 import { CountUp } from '../CountUp';
 import { CW_FRAMEWORK, CW_PROOF } from '../../data/contentWritingContent';
 
@@ -10,29 +10,56 @@ import { CW_FRAMEWORK, CW_PROOF } from '../../data/contentWritingContent';
    The page's thesis in one visual: content being actually written.
    ========================================================================== */
 
-/** Handwritten-wave path: irregular scribble that reads as writing. */
+/**
+ * Handwriting-like path: word groups separated by gaps, slight baseline
+ * drift, and taller strokes where ascenders would be — reads like writing
+ * rather than a continuous wave.
+ */
 const scribble = (x: number, y: number, w: number, seed: number): string => {
-  let d = `M ${x} ${y}`;
+  let d = '';
   let cx = 0;
-  let i = 0;
+  let wi = 0;
   while (cx < w) {
-    const step = Math.min(13 + ((seed + i * 5) % 4) * 3, w - cx); // 13–22px
-    const rise = 4 + ((seed + i * 3) % 4) * 2; // 4–10px
-    const dip = (seed + i) % 3; // 0–2px
-    d += ` q ${(step / 2).toFixed(1)} -${rise} ${step} ${dip}`;
-    cx += step;
-    i++;
+    const dy = ((seed + wi * 3) % 5) - 2; // per-word baseline drift
+    d += wi === 0 ? `M ${x} ${y + dy}` : ` M ${x + cx} ${y + dy}`;
+    const strokes = 3 + ((seed + wi * 7) % 4); // 3–6 strokes per word
+    for (let s = 0; s < strokes && cx < w; s++) {
+      const avail = w - cx;
+      if (avail < 5) {
+        cx = w;
+        break;
+      }
+      const step = Math.min(11 + ((seed + wi + s * 5) % 4) * 3, avail); // 11–20px
+      let rise = 4 + ((seed + wi + s * 3) % 4) * 2; // 4–10px
+      if ((seed + wi + s) % 5 === 0) rise = Math.round(rise * 1.7); // ascender
+      const dip = (seed + wi + s) % 3;
+      d += ` q ${(step / 2).toFixed(1)} -${rise} ${step} ${dip}`;
+      cx += step;
+    }
+    wi++;
+    if (cx < w) cx += 6 + ((seed + wi) % 4); // gap between words
   }
   return d;
 };
 
-/** Right-page lines: x, y, width per written line (last one is short). */
+/** The headline word written first — revealed by a clip that follows the pen. */
+const HEADLINE = { x: 346, y: 158, clipW: 128, penEnd: 464 };
+
+/** Body lines: x, y, width per written line (last one is short). */
 const WRITE_LINES = [
-  { x: 346, y: 150, w: 200, sw: 5 },
   { x: 346, y: 192, w: 208, sw: 3.5 },
   { x: 346, y: 230, w: 192, sw: 3.5 },
   { x: 346, y: 268, w: 208, sw: 3.5 },
   { x: 346, y: 306, w: 120, sw: 3.5 },
+];
+
+/** All five ruled guides (headline included). */
+const GUIDES = [
+  { x: 346, y: 150, w: 210 },
+  { x: 346, y: 192, w: 208 },
+  { x: 346, y: 230, w: 192 },
+  { x: 346, y: 268, w: 208 },
+  { x: 346, y: 306, w: 120 },
 ];
 
 const LEFT_LINES = [
@@ -43,60 +70,129 @@ const LEFT_LINES = [
   { x: 96, y: 306, w: 110 },
 ];
 
-/** Fountain pen, tip at local (0,0), leaning up-right (rotate pivots at tip). */
+/** Old writing fades toward the bottom — content that disappeared. */
+const OLD_OPACITY = [1, 0.9, 0.7, 0.5, 0.32];
+
+/** Absolute start time for step i (0 = headline): 0.45s + i * 0.9s. */
+const stepAt = (i: number) => 0.45 + i * 0.9;
+
+/** Fountain pen, tip at local (0,0), soft page shadow, leaning up-right. */
 const PenBody: React.FC = () => (
-  <g transform="rotate(30)">
-    <path d="M 0 0 L -5 -13 L 5 -13 Z" fill="#C61A1A" />
-    <rect x="-6.5" y="-27" width="13" height="15" rx="3" fill="#E2E8F0" />
-    <line x1="0" y1="-26" x2="0" y2="-15" stroke="#94A3B8" strokeWidth="1.4" />
-    <rect x="-8" y="-78" width="16" height="53" rx="6" fill="#18181B" />
-    <rect x="-8" y="-35" width="16" height="7" rx="1.5" fill="#C61A1A" />
-    <rect x="6" y="-74" width="4.5" height="26" rx="2" fill="#9E1414" />
-    <rect x="-3" y="-74" width="6" height="6" rx="2" fill="#3F3F46" />
+  <g>
+    <ellipse
+      cx="9"
+      cy="7"
+      rx="15"
+      ry="3.5"
+      fill="#0F172A"
+      opacity="0.22"
+      filter="url(#cw-soft)"
+    />
+    <g transform="rotate(30)">
+      <path d="M 0 0 L -5 -13 L 5 -13 Z" fill="#C61A1A" />
+      <rect x="-6.5" y="-27" width="13" height="15" rx="3" fill="#E2E8F0" />
+      <line x1="0" y1="-26" x2="0" y2="-15" stroke="#94A3B8" strokeWidth="1.4" />
+      <rect x="-8" y="-78" width="16" height="53" rx="6" fill="#18181B" />
+      <rect x="-8" y="-35" width="16" height="7" rx="1.5" fill="#C61A1A" />
+      <rect x="6" y="-74" width="4.5" height="26" rx="2" fill="#9E1414" />
+      <rect x="-3" y="-74" width="6" height="6" rx="2" fill="#3F3F46" />
+    </g>
   </g>
 );
 
-const HERO_CHIPS = ['Ranks', 'Reads well', 'Converts'];
+const HERO_CHIPS = [
+  { label: 'Ranks', Icon: Search },
+  { label: 'Reads well', Icon: BookOpen },
+  { label: 'Converts', Icon: TrendingUp },
+];
 
 export const InkPenBook: React.FC = () => {
   const reduce = useReducedMotion();
 
-  const lineVariants = {
+  /* Explicit absolute delays keep every line, pen, and reveal in sync. */
+  const draw = (delay: number) => ({
     hidden: { pathLength: 0, opacity: 0 },
     show: {
       pathLength: 1,
       opacity: 1,
-      transition: { duration: 0.8, ease: 'easeInOut' as const },
-    },
-  };
-
-  const penVariants = (x0: number, x1: number, y: number) => ({
-    hidden: { opacity: 0, x: x0, y },
-    show: {
-      opacity: [0, 1, 1, 0],
-      x: [x0, x0 + 5, x1, x1],
-      y: [y, y, y, y],
-      transition: { duration: 0.95, times: [0, 0.07, 0.82, 1], ease: 'easeInOut' as const },
+      transition: { duration: 0.8, delay, ease: 'easeInOut' as const },
     },
   });
 
+  const pen = (x0: number, x1: number, y: number, delay: number) => ({
+    hidden: { opacity: 0, x: x0, y: y - 16 },
+    show: {
+      opacity: [0, 1, 1, 0],
+      x: [x0, x0 + 4, x1, x1],
+      y: [y - 16, y, y, y - 16],
+      transition: {
+        duration: 1,
+        delay,
+        times: [0, 0.1, 0.8, 1],
+        ease: 'easeInOut' as const,
+      },
+    },
+  });
+
+  const headlineClip = {
+    hidden: { width: 0 },
+    show: {
+      width: HEADLINE.clipW,
+      transition: { duration: 0.8, delay: stepAt(0), ease: 'easeInOut' as const },
+    },
+  };
+
+  const underlineV = {
+    hidden: { pathLength: 0, opacity: 0 },
+    show: {
+      pathLength: 1,
+      opacity: 1,
+      transition: { duration: 0.5, delay: stepAt(0) + 0.85, ease: [0.22, 1, 0.36, 1] as const },
+    },
+  };
+
   return (
-    <div className="relative w-full">
+    <motion.div
+      className="relative w-full"
+      animate={reduce ? undefined : { y: [0, -6, 0] }}
+      transition={reduce ? undefined : { duration: 6.5, repeat: Infinity, ease: 'easeInOut' }}
+    >
+      {/* warm ink glow behind the book */}
+      <div
+        className="absolute inset-2 sm:inset-6 bg-[radial-gradient(ellipse_at_50%_45%,rgba(198,26,26,0.13),transparent_70%)] blur-2xl pointer-events-none"
+        aria-hidden="true"
+      />
+
       <motion.svg
-        viewBox="0 0 640 440"
-        className="w-full h-auto block"
-        initial={reduce ? false : 'hidden'}
-        animate="show"
-        transition={{ staggerChildren: 0.9, delayChildren: 0.45 }}
-        aria-label="A pen writing red ink lines into an open book"
-        role="img"
-      >
-        <defs>
-          <linearGradient id="cw-page" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#FFFFFF" />
-            <stop offset="100%" stopColor="#F8FAFC" />
-          </linearGradient>
-        </defs>
+          viewBox="0 0 640 440"
+          className="relative w-full h-auto block"
+          initial={reduce ? false : 'hidden'}
+          animate="show"
+          aria-label="A pen writing the word Growth and red ink lines into an open book"
+          role="img"
+        >
+          <defs>
+            <linearGradient id="cw-page" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#FFFFFF" />
+              <stop offset="100%" stopColor="#F8FAFC" />
+            </linearGradient>
+            <linearGradient id="cw-fold-r" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#0F172A" stopOpacity="0.12" />
+              <stop offset="100%" stopColor="#0F172A" stopOpacity="0" />
+            </linearGradient>
+            <linearGradient id="cw-fold-l" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#0F172A" stopOpacity="0" />
+              <stop offset="100%" stopColor="#0F172A" stopOpacity="0.12" />
+            </linearGradient>
+            <filter id="cw-soft" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="2.5" />
+            </filter>
+            {!reduce && (
+              <clipPath id="cw-headline">
+                <motion.rect x={HEADLINE.x - 6} y="116" height="58" variants={headlineClip} />
+              </clipPath>
+            )}
+          </defs>
 
         {/* shadow */}
         <ellipse cx="320" cy="412" rx="250" ry="15" fill="#0F172A" opacity="0.10" />
@@ -127,9 +223,12 @@ export const InkPenBook: React.FC = () => {
           strokeWidth="1.5"
         />
         <path d="M 320 92 L 320 384" stroke="#0F172A" strokeOpacity="0.28" strokeWidth="3.5" />
+        {/* inner fold shadows give the pages depth at the spine */}
+        <rect x="322" y="97" width="18" height="283" fill="url(#cw-fold-r)" />
+        <rect x="300" y="97" width="18" height="283" fill="url(#cw-fold-l)" />
 
         {/* ruled guides */}
-        {WRITE_LINES.map((l) => (
+        {GUIDES.map((l) => (
           <line
             key={`gr-${l.y}`}
             x1={l.x - 2}
@@ -151,11 +250,14 @@ export const InkPenBook: React.FC = () => {
             strokeWidth="2"
           />
         ))}
-        {/* red margin rule on the written page */}
+        {/* red margin rule + a few ink specks on the written page */}
         <line x1="336" y1="112" x2="336" y2="366" stroke="#C61A1A" strokeOpacity="0.3" strokeWidth="1.5" />
+        <circle cx="556" cy="332" r="2" fill="#C61A1A" opacity="0.5" />
+        <circle cx="547" cy="345" r="1.3" fill="#C61A1A" opacity="0.4" />
+        <circle cx="561" cy="347" r="1.6" fill="#C61A1A" opacity="0.45" />
 
-        {/* left page — old gray writing (static) */}
-        {LEFT_LINES.map((l) => (
+        {/* left page — old gray writing, fading toward the bottom */}
+        {LEFT_LINES.map((l, i) => (
           <path
             key={`old-${l.y}`}
             d={scribble(l.x, l.y, l.w, l.y)}
@@ -163,12 +265,31 @@ export const InkPenBook: React.FC = () => {
             stroke="#CBD5E1"
             strokeWidth="3"
             strokeLinecap="round"
+            opacity={OLD_OPACITY[i]}
           />
         ))}
 
-        {/* right page — new red writing, drawn on scroll with its pen */}
+        {/* right page — headline word + body lines, each written with the pen */}
         {reduce ? (
           <>
+            <text
+              x={HEADLINE.x + 2}
+              y={HEADLINE.y + 2}
+              fontFamily="Georgia, 'Times New Roman', serif"
+              fontStyle="italic"
+              fontWeight="700"
+              fontSize="34"
+              fill="#C61A1A"
+            >
+              Growth.
+            </text>
+            <path
+              d="M 350 174 Q 405 181 466 172"
+              fill="none"
+              stroke="#C61A1A"
+              strokeWidth="3"
+              strokeLinecap="round"
+            />
             {WRITE_LINES.map((l) => (
               <path
                 key={`new-${l.y}`}
@@ -179,33 +300,62 @@ export const InkPenBook: React.FC = () => {
                 strokeLinecap="round"
               />
             ))}
-            <g transform={`translate(${WRITE_LINES[4].x + WRITE_LINES[4].w} ${WRITE_LINES[4].y})`}>
+            <g transform={`translate(${WRITE_LINES[3].x + WRITE_LINES[3].w} ${WRITE_LINES[3].y})`}>
               <PenBody />
             </g>
           </>
         ) : (
-          WRITE_LINES.map((l, i) => (
-            <motion.g
-              key={`unit-${l.y}`}
-              variants={{
-                hidden: { opacity: 1 },
-                show: { opacity: 1, transition: { staggerChildren: 0.06 } },
-              }}
+          <>
+            <text
+              clipPath="url(#cw-headline)"
+              x={HEADLINE.x + 2}
+              y={HEADLINE.y + 2}
+              fontFamily="Georgia, 'Times New Roman', serif"
+              fontStyle="italic"
+              fontWeight="700"
+              fontSize="34"
+              fill="#C61A1A"
             >
+              Growth.
+            </text>
+            <motion.path
+              d="M 350 174 Q 405 181 466 172"
+              fill="none"
+              stroke="#C61A1A"
+              strokeWidth="3"
+              strokeLinecap="round"
+              variants={underlineV}
+              aria-hidden="true"
+            />
+            {WRITE_LINES.map((l, j) => (
               <motion.path
+                key={`new-${l.y}`}
                 d={scribble(l.x, l.y, l.w, l.y + 7)}
                 fill="none"
                 stroke="#C61A1A"
                 strokeWidth={l.sw}
                 strokeLinecap="round"
-                variants={lineVariants}
+                variants={draw(stepAt(j + 1))}
                 aria-hidden="true"
               />
-              <motion.g variants={penVariants(l.x, l.x + l.w, l.y)} aria-hidden="true">
+            ))}
+            {/* pens: headline first, then one per body line */}
+            <motion.g
+              variants={pen(HEADLINE.x, HEADLINE.penEnd, HEADLINE.y, stepAt(0))}
+              aria-hidden="true"
+            >
+              <PenBody />
+            </motion.g>
+            {WRITE_LINES.map((l, j) => (
+              <motion.g
+                key={`pen-${l.y}`}
+                variants={pen(l.x, l.x + l.w, l.y, stepAt(j + 1))}
+                aria-hidden="true"
+              >
                 <PenBody />
               </motion.g>
-            </motion.g>
-          ))
+            ))}
+          </>
         )}
 
         {/* caret blinks at the end of the last line once written */}
@@ -233,9 +383,9 @@ export const InkPenBook: React.FC = () => {
       </motion.svg>
 
       {/* floating promises from the hero copy */}
-      {HERO_CHIPS.map((chip, i) => (
+      {HERO_CHIPS.map(({ label, Icon }, i) => (
         <motion.span
-          key={chip}
+          key={label}
           className={`absolute inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[11px] font-extrabold text-slate-700 shadow-[0_14px_30px_-18px_rgba(15,23,42,0.45)] ${
             i === 0
               ? 'left-[3%] top-[6%]'
@@ -254,11 +404,11 @@ export const InkPenBook: React.FC = () => {
                 }
           }
         >
-          <span className="w-1.5 h-1.5 rounded-full bg-[#C61A1A]" />
-          {chip}
+          <Icon className="w-3.5 h-3.5 text-[#C61A1A]" />
+          {label}
         </motion.span>
       ))}
-    </div>
+    </motion.div>
   );
 };
 
