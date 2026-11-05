@@ -14,9 +14,9 @@ const QUERY = 'coffee shop near me';
 type Phase = 'typing' | 'searching' | 'results' | 'ranked' | 'clearing';
 
 const HERO_CHIPS = [
-  { label: 'Verified profile', Icon: BadgeCheck, pos: 'left-[-2%] top-[14%]', tone: 'plain' },
-  { label: 'Top 3 Map Pack', Icon: MapPin, pos: 'right-[-3%] top-[4%]', tone: 'red' },
-  { label: '4.9★ rating', Icon: Star, pos: 'right-[2%] bottom-[4%]', tone: 'plain' },
+  { label: 'Verified profile', Icon: BadgeCheck, tone: 'plain' },
+  { label: 'Top 3 Map Pack', Icon: MapPin, tone: 'red' },
+  { label: '4.9★ rating', Icon: Star, tone: 'plain' },
 ] as const;
 
 const CompetitorRow: React.FC<{ delay: number }> = ({ delay }) => {
@@ -166,6 +166,33 @@ export const SearchRun: React.FC = () => {
         aria-hidden="true"
       />
 
+      {/* floating chips — sit above the visual so they never cover it */}
+      <div className="relative mb-3 flex flex-wrap items-center gap-2">
+        {HERO_CHIPS.map(({ label, Icon, tone }, i) => (
+          <motion.span
+            key={label}
+            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-extrabold shadow-[0_14px_30px_-18px_rgba(15,23,42,0.45)] ${
+              tone === 'red'
+                ? 'border-red-200 bg-red-50 text-[#C61A1A]'
+                : 'border-slate-200 bg-white text-slate-700'
+            }`}
+            initial={reduce ? false : { opacity: 0, y: 10 }}
+            animate={reduce ? undefined : { opacity: 1, y: [0, -7, 0] }}
+            transition={
+              reduce
+                ? undefined
+                : {
+                    opacity: { duration: 0.5, delay: 0.5 + i * 0.15 },
+                    y: { duration: 3.4, repeat: Infinity, delay: i * 0.6, ease: 'easeInOut' },
+                  }
+            }
+          >
+            <Icon className="w-3.5 h-3.5" />
+            {label}
+          </motion.span>
+        ))}
+      </div>
+
       <div className="relative" role="img" aria-label="A Google search for a local business where Your Business appears at rank number one in the Map Pack">
         {/* search bar */}
         <motion.div
@@ -241,31 +268,6 @@ export const SearchRun: React.FC = () => {
           )}
         </AnimatePresence>
       </div>
-
-      {/* floating chips */}
-      {HERO_CHIPS.map(({ label, Icon, pos, tone }, i) => (
-        <motion.span
-          key={label}
-          className={`absolute inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-extrabold shadow-[0_14px_30px_-18px_rgba(15,23,42,0.45)] ${
-            tone === 'red'
-              ? 'border-red-200 bg-red-50 text-[#C61A1A]'
-              : 'border-slate-200 bg-white text-slate-700'
-          } ${pos}`}
-          initial={reduce ? false : { opacity: 0, y: 10 }}
-          animate={reduce ? undefined : { opacity: 1, y: [0, -7, 0] }}
-          transition={
-            reduce
-              ? undefined
-              : {
-                  opacity: { duration: 0.5, delay: 0.5 + i * 0.15 },
-                  y: { duration: 3.4, repeat: Infinity, delay: i * 0.6, ease: 'easeInOut' },
-                }
-          }
-        >
-          <Icon className="w-3.5 h-3.5" />
-          {label}
-        </motion.span>
-      ))}
     </motion.div>
   );
 };
