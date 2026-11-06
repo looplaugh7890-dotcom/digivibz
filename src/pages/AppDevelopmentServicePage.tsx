@@ -8,7 +8,7 @@ import {
   FailureFunnel,
   PipelineRail,
   ShiftDiff,
-  SystemBlueprint,
+  LiveAppPhone,
   SystemManifest,
 } from '../components/appdev/AppDevVisuals';
 import {
@@ -32,30 +32,23 @@ const scrollToSection = (id: string) => {
 };
 
 /* ------------------------------------------------------------------
-   Hero — dark stage, grid floor, copy left / system blueprint right.
+   Hero — white stage, dot grid, copy left / live app phone right.
 ------------------------------------------------------------------ */
 const HeroSection: React.FC<{ onOpenAudit: () => void }> = ({ onOpenAudit }) => {
   const reduce = useReducedMotion();
 
   return (
-    <section className="relative overflow-hidden bg-[#0C0C0D] pt-14 pb-16 sm:pt-20 sm:pb-24">
-      {/* grid floor */}
+    <section className="relative overflow-hidden bg-white pt-14 pb-16 sm:pt-20 sm:pb-24">
+      {/* dot grid */}
       <div
-        className="absolute inset-0 opacity-[0.14] pointer-events-none"
-        style={{
-          backgroundImage:
-            'linear-gradient(rgba(198,26,26,0.55) 1px, transparent 1px), linear-gradient(90deg, rgba(198,26,26,0.55) 1px, transparent 1px)',
-          backgroundSize: '58px 58px',
-          maskImage: 'radial-gradient(ellipse at 50% 35%, black 25%, transparent 78%)',
-          WebkitMaskImage: 'radial-gradient(ellipse at 50% 35%, black 25%, transparent 78%)',
-        }}
+        className="absolute inset-0 opacity-[0.05] pointer-events-none bg-[radial-gradient(#0F172A_1px,transparent_1px)] [background-size:20px_20px]"
         aria-hidden="true"
       />
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            'radial-gradient(60% 50% at 50% 0%, rgba(198,26,26,0.18), transparent 70%), radial-gradient(40% 40% at 85% 90%, rgba(198,26,26,0.10), transparent 70%)',
+            'radial-gradient(55% 45% at 78% 30%, rgba(198,26,26,0.09), transparent 70%), radial-gradient(40% 40% at 10% 90%, rgba(198,26,26,0.06), transparent 70%)',
         }}
         aria-hidden="true"
       />
@@ -68,7 +61,7 @@ const HeroSection: React.FC<{ onOpenAudit: () => void }> = ({ onOpenAudit }) => 
               initial={reduce ? false : { opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/15 bg-white/[0.06] backdrop-blur text-[11px] font-extrabold uppercase tracking-[0.18em] text-white/85"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-slate-200 bg-white text-[11px] font-extrabold uppercase tracking-[0.18em] text-slate-700 shadow-2xs"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-[#C61A1A] animate-pulse" />
               {APP_HERO.badge}
@@ -78,10 +71,10 @@ const HeroSection: React.FC<{ onOpenAudit: () => void }> = ({ onOpenAudit }) => 
               initial={reduce ? false : { opacity: 0, y: 22 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-              className="mt-5 text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-[1.08]"
+              className="mt-5 text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-[1.08]"
             >
               {APP_HERO.titleLead}
-              <span className="relative inline-block text-[#E83535]">
+              <span className="relative inline-block text-[#C61A1A]">
                 {APP_HERO.titleHighlight}
                 {!reduce && (
                   <motion.span
@@ -100,7 +93,7 @@ const HeroSection: React.FC<{ onOpenAudit: () => void }> = ({ onOpenAudit }) => 
                 initial={reduce ? false : { opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.18 + i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                className={`text-sm sm:text-base text-slate-400 leading-relaxed max-w-xl ${
+                className={`text-sm sm:text-base text-slate-600 leading-relaxed max-w-xl ${
                   i === 0 ? 'mt-5' : 'mt-3.5'
                 }`}
               >
@@ -123,20 +116,20 @@ const HeroSection: React.FC<{ onOpenAudit: () => void }> = ({ onOpenAudit }) => 
               </button>
               <button
                 onClick={() => scrollToSection('app-framework')}
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl border border-white/15 hover:border-white/35 text-white/85 hover:text-white text-sm font-bold transition-colors cursor-pointer"
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl border border-slate-300 hover:border-slate-500 text-slate-700 hover:text-slate-900 text-sm font-bold transition-colors cursor-pointer"
               >
                 See the 5D framework
               </button>
             </motion.div>
           </div>
 
-          {/* ------------------------------------------------- blueprint */}
+          {/* ---------------------------------------------- live phone */}
           <motion.div
             initial={reduce ? false : { opacity: 0, y: 26 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
           >
-            <SystemBlueprint />
+            <LiveAppPhone />
           </motion.div>
         </div>
       </div>

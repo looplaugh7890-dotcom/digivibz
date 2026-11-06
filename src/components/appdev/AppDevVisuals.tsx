@@ -1,117 +1,508 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { Check, CircleX, Cloud, Cpu, Monitor, Server } from 'lucide-react';
+import {
+  BarChart3,
+  BatteryFull,
+  Bell,
+  Check,
+  CircleX,
+  Cpu,
+  CreditCard,
+  Home,
+  ShoppingCart,
+  Signal,
+  Smartphone,
+  TrendingUp,
+  Wifi,
+  Zap,
+} from 'lucide-react';
 import { CountUp } from '../CountUp';
 import { APP_ASSETS, APP_FRAMEWORK, APP_SHIFT, APP_SYSTEM } from '../../data/appDevContent';
 
 /* ==========================================================================
-   1. HERO — "System Blueprint": a dark editor window with four hoverable
-   architecture layers, data packets rising between them, and a timeline
-   readout. The page's thesis in one visual: not an app — a system.
+   1. HERO — "Live App Phone": a phone with an app running inside it. The
+   screen cycles shop -> cart -> stats, a push notification slides in over
+   the cart, the tab bar tracks the active screen, and the release pipeline
+   beside it fills as the build compiles, tests, and ships.
    ========================================================================== */
 
-const BLUEPRINT_LAYERS = [
-  { id: 'L1', name: 'Experience', icon: Monitor, chips: ['Web', 'iOS', 'Android'] },
-  { id: 'L2', name: 'Intelligence', icon: Cpu, chips: ['OpenAI', 'TensorFlow', 'ML Models'] },
-  { id: 'L3', name: 'Services', icon: Server, chips: ['APIs', 'Node', 'Python'] },
-  { id: 'L4', name: 'Infrastructure', icon: Cloud, chips: ['AWS', 'Docker', 'CI/CD'] },
+const RUN_CHIPS = [
+  { label: 'Native + hybrid builds', Icon: Smartphone, tone: 'red' },
+  { label: '60 FPS target', Icon: Zap, tone: 'plain' },
+  { label: 'AI-ready', Icon: Cpu, tone: 'plain' },
+] as const;
+
+const RUN_TABS = [
+  { label: 'Shop', Icon: Home },
+  { label: 'Cart', Icon: ShoppingCart },
+  { label: 'Stats', Icon: BarChart3 },
+] as const;
+
+const RUN_STAGES = [
+  'Compile · 482 modules',
+  'Tests · 128 / 128',
+  'Ship · App Store + Play',
 ];
 
-/** Timeline readout — figures taken from the page's own FAQ copy. */
-const BLUEPRINT_METRICS = [
+const RUN_METRICS = [
+  { value: '60 FPS', label: 'Frame rate' },
+  { value: '99.8%', label: 'Crash-free' },
+  { value: '42ms', label: 'API p95' },
+  { value: '4.9', label: 'Store rating' },
+] as const;
+
+/** Figures taken from the page's own FAQ copy (kept from the old hero). */
+const RUN_TIMELINE = [
   { value: '6–8 WKS', label: 'Simple app' },
   { value: '4–6 MO', label: 'Complex build' },
   { value: '3–6 MO', label: 'Post-launch' },
-];
+] as const;
 
-export const SystemBlueprint: React.FC = () => {
+const RUN_STACK = ['React Native', 'Swift', 'Kotlin', 'Flutter', 'Firebase'];
+
+const LOOP_MS = 8000;
+const STEP_MS = 40;
+const SCREEN_MS = LOOP_MS / 3;
+
+export const LiveAppPhone: React.FC = () => {
   const reduce = useReducedMotion();
+  const [t, setT] = useState(0);
+
+  useEffect(() => {
+    if (reduce) return;
+    const id = window.setInterval(() => setT((x) => (x + STEP_MS) % LOOP_MS), STEP_MS);
+    return () => window.clearInterval(id);
+  }, [reduce]);
+
+  const screen = reduce ? 0 : Math.floor(t / SCREEN_MS) % 3;
+  const progress = reduce ? 100 : (t / LOOP_MS) * 100;
+  const stage = reduce ? 2 : Math.min(2, Math.floor(t / SCREEN_MS));
+  const notifOn = !reduce && t >= SCREEN_MS + 500 && t < 2 * SCREEN_MS - 300;
+  const shipped = reduce || stage >= 2;
 
   return (
-    <div className="w-full rounded-3xl border border-white/10 bg-[#101013] overflow-hidden shadow-[0_40px_90px_-45px_rgba(0,0,0,0.9)]">
-      {/* editor window chrome */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-white/[0.03]">
-        <span className="flex items-center gap-2" aria-hidden="true">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#C61A1A]" />
-          <span className="w-2.5 h-2.5 rounded-full bg-white/25" />
-          <span className="w-2.5 h-2.5 rounded-full bg-white/25" />
-          <span className="ml-2 font-mono text-[10px] font-bold tracking-wider text-white/50">
-            app-blueprint.dz
-          </span>
-        </span>
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-[#C61A1A]/50 bg-[#C61A1A]/15 px-2.5 py-0.5 text-[9px] font-extrabold uppercase tracking-widest text-[#E83535]">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#C61A1A] animate-pulse" />
-          System, not app
-        </span>
-      </div>
+    <motion.div
+      className="relative w-full"
+      animate={reduce ? undefined : { y: [0, -6, 0] }}
+      transition={reduce ? undefined : { duration: 6.5, repeat: Infinity, ease: 'easeInOut' }}
+    >
+      <div
+        className="absolute inset-2 sm:inset-6 bg-[radial-gradient(ellipse_at_50%_45%,rgba(198,26,26,0.12),transparent_70%)] blur-2xl pointer-events-none"
+        aria-hidden="true"
+      />
 
-      {/* layered stack */}
-      <div className="px-4 sm:px-5 py-5">
-        {BLUEPRINT_LAYERS.map((layer, i) => {
-          const Icon = layer.icon;
-          return (
-            <div key={layer.id}>
-              <motion.div
-                initial={reduce ? false : { opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.55, delay: 0.25 + i * 0.13, ease: [0.22, 1, 0.36, 1] }}
-                className="group relative flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.04] px-3.5 py-3 transition-all duration-300 hover:border-[#C61A1A]/60 hover:bg-white/[0.07] hover:-translate-y-0.5"
-              >
-                <span className="font-mono text-[10px] font-bold text-[#C61A1A] shrink-0">
-                  {layer.id}
-                </span>
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/[0.05] text-white/70 transition-colors group-hover:border-[#C61A1A]/50 group-hover:text-[#E83535]">
-                  <Icon className="w-4 h-4" />
-                </span>
-                <span className="text-sm font-extrabold uppercase tracking-wider text-white/90">
-                  {layer.name}
-                </span>
-                <span className="ml-auto hidden sm:flex items-center gap-1.5">
-                  {layer.chips.map((chip) => (
-                    <span
-                      key={chip}
-                      className="rounded-md border border-white/10 bg-white/[0.05] px-2 py-0.5 text-[9px] font-bold tracking-wide text-white/55 transition-colors group-hover:border-white/25 group-hover:text-white/85"
-                    >
-                      {chip}
-                    </span>
-                  ))}
-                </span>
-              </motion.div>
-
-              {/* spine with rising data packet between layers */}
-              {i < BLUEPRINT_LAYERS.length - 1 && (
-                <div className="relative mx-auto h-6 w-0" aria-hidden="true">
-                  <span className="absolute left-0 top-0 h-full w-px -translate-x-1/2 bg-white/15" />
-                  {!reduce && (
-                    <motion.span
-                      className="absolute left-0 top-0 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-[#C61A1A] shadow-[0_0_8px_rgba(198,26,26,0.9)]"
-                      animate={{ y: [0, 20], opacity: [0, 1, 0] }}
-                      transition={{ duration: 1.7, repeat: Infinity, delay: 0.5 + i * 0.45, ease: 'easeInOut' }}
-                    />
-                  )}
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-
-      {/* timeline readout */}
-      <div className="grid grid-cols-3 divide-x divide-white/10 border-t border-white/10 bg-white/[0.02]">
-        {BLUEPRINT_METRICS.map((m) => (
-          <div key={m.label} className="px-2 py-3.5 text-center">
-            <div className="text-sm sm:text-base font-extrabold text-white tabular-nums leading-none">
-              <CountUp value={m.value} />
-            </div>
-            <div className="mt-1 text-[9px] font-bold uppercase tracking-wider text-white/45">
-              {m.label}
-            </div>
-          </div>
+      {/* chips above the visual */}
+      <div className="relative mb-3 flex flex-wrap items-center gap-2">
+        {RUN_CHIPS.map(({ label, Icon, tone }, i) => (
+          <motion.span
+            key={label}
+            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-extrabold shadow-[0_14px_30px_-18px_rgba(15,23,42,0.45)] ${
+              tone === 'red'
+                ? 'border-red-200 bg-red-50 text-[#C61A1A]'
+                : 'border-slate-200 bg-white text-slate-700'
+            }`}
+            initial={reduce ? false : { opacity: 0, y: 10 }}
+            animate={reduce ? undefined : { opacity: 1, y: [0, -7, 0] }}
+            transition={
+              reduce
+                ? undefined
+                : {
+                    opacity: { duration: 0.5, delay: 0.5 + i * 0.15 },
+                    y: { duration: 3.4, repeat: Infinity, delay: i * 0.6, ease: 'easeInOut' },
+                  }
+            }
+          >
+            <Icon className="w-3.5 h-3.5" />
+            {label}
+          </motion.span>
         ))}
       </div>
-    </div>
+
+      <div
+        className="relative rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-[0_36px_80px_-42px_rgba(15,23,42,0.6)]"
+        role="img"
+        aria-label="A phone running an app — the screen cycles through shop, cart and stats views while a push notification arrives and the release pipeline beside it compiles, tests and ships"
+      >
+        {/* window header */}
+        <div className="flex items-center gap-2.5 border-b border-slate-100 bg-slate-50/70 px-4 py-2.5">
+          <span className="hidden sm:flex gap-1.5 shrink-0" aria-hidden="true">
+            <span className="h-2.5 w-2.5 rounded-full bg-slate-300" />
+            <span className="h-2.5 w-2.5 rounded-full bg-slate-300" />
+            <span className="h-2.5 w-2.5 rounded-full bg-slate-300" />
+          </span>
+          <span className="ml-1 font-mono text-[10.5px] font-bold text-slate-600">app.run</span>
+          <span
+            className={`ml-auto inline-flex items-center gap-1.5 rounded-md border px-2 py-0.5 font-mono text-[9.5px] font-extrabold ${
+              shipped
+                ? 'border-red-200 bg-red-50 text-[#C61A1A]'
+                : 'border-slate-200 bg-white text-slate-500'
+            }`}
+          >
+            <span
+              className={`w-1.5 h-1.5 rounded-full ${
+                shipped ? 'bg-[#C61A1A] animate-pulse' : 'bg-slate-400'
+              }`}
+            />
+            {shipped ? 'SHIPPED' : 'BUILDING'}
+          </span>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-4 p-3.5 sm:p-4">
+          {/* ------------------------------------------------------ phone */}
+          <div className="shrink-0 mx-auto sm:mx-0 w-[170px] sm:w-[184px]">
+            <div className="rounded-[1.9rem] bg-slate-900 p-[6px] shadow-[0_26px_60px_-30px_rgba(15,23,42,0.7)]">
+              <div className="relative flex h-[326px] sm:h-[344px] flex-col overflow-hidden rounded-[1.5rem] bg-white">
+                {/* dynamic island + status bar */}
+                <span
+                  className="absolute left-1/2 top-1.5 z-10 h-2 w-11 -translate-x-1/2 rounded-full bg-slate-900"
+                  aria-hidden="true"
+                />
+                <div className="flex items-center justify-between px-3.5 pt-2.5 pb-1">
+                  <span className="font-mono text-[9px] font-bold text-slate-900">9:41</span>
+                  <span className="flex items-center gap-1 text-slate-900" aria-hidden="true">
+                    <Signal className="w-2.5 h-2.5" />
+                    <Wifi className="w-2.5 h-2.5" />
+                    <BatteryFull className="w-3 h-3" />
+                  </span>
+                </div>
+
+                {/* screens */}
+                <div className="relative flex-1 overflow-hidden">
+                  <AnimatePresence mode="wait">
+                    {/* ------------------------------------------ shop */}
+                    {screen === 0 && (
+                      <motion.div
+                        key="shop"
+                        initial={reduce ? false : { opacity: 0, x: 14 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={reduce ? undefined : { opacity: 0, x: -14 }}
+                        transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+                        className="absolute inset-0 flex flex-col gap-2 px-3 pt-1"
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="text-[12.5px] font-extrabold text-slate-900">
+                            Discover
+                          </span>
+                          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-50">
+                            <Bell className="w-3 h-3 text-[#C61A1A]" />
+                          </span>
+                        </div>
+                        <div className="flex gap-1.5">
+                          {['New', 'Deals', 'Saved'].map((c, i) => (
+                            <span
+                              key={c}
+                              className={`rounded-full px-2 py-0.5 text-[8.5px] font-extrabold ${
+                                i === 0
+                                  ? 'bg-[#C61A1A] text-white'
+                                  : 'bg-slate-100 text-slate-500'
+                              }`}
+                            >
+                              {c}
+                            </span>
+                          ))}
+                        </div>
+                        {[0, 1].map((i) => (
+                          <div
+                            key={i}
+                            className="rounded-xl border border-slate-200 p-2 transition-colors"
+                          >
+                            <div className="flex items-center gap-2">
+                              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100">
+                                <ShoppingBagPlaceholder />
+                              </span>
+                              <span className="min-w-0 flex-1">
+                                <span className="block truncate text-[10.5px] font-extrabold text-slate-800">
+                                  {i === 0 ? 'Aero runner — red' : 'Daily kit bundle'}
+                                </span>
+                                <span className="mt-0.5 block text-[9px] text-slate-400">
+                                  {i === 0 ? '4.8 ★ · 214 sold' : '4.6 ★ · 98 sold'}
+                                </span>
+                              </span>
+                              <span className="shrink-0 font-mono text-[10.5px] font-extrabold text-[#C61A1A]">
+                                {i === 0 ? '$86' : '$42'}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                        <span className="mt-auto mb-1 flex items-center justify-center rounded-lg bg-[#C61A1A] py-2 text-[10.5px] font-extrabold text-white">
+                          Shop new arrivals
+                        </span>
+                      </motion.div>
+                    )}
+
+                    {/* ------------------------------------------ cart */}
+                    {screen === 1 && (
+                      <motion.div
+                        key="cart"
+                        initial={reduce ? false : { opacity: 0, x: 14 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={reduce ? undefined : { opacity: 0, x: -14 }}
+                        transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+                        className="absolute inset-0 flex flex-col gap-2 px-3 pt-1"
+                      >
+                        <span className="text-[12.5px] font-extrabold text-slate-900">
+                          Your cart · 2
+                        </span>
+                        {[
+                          { name: 'Aero runner — red', price: '$86' },
+                          { name: 'Daily kit bundle', price: '$42' },
+                        ].map((item) => (
+                          <div
+                            key={item.name}
+                            className="flex items-center gap-2 rounded-xl border border-slate-200 p-2"
+                          >
+                            <span className="h-7 w-7 shrink-0 rounded-lg bg-slate-100" />
+                            <span className="min-w-0 flex-1">
+                              <span className="block truncate text-[10px] font-extrabold text-slate-800">
+                                {item.name}
+                              </span>
+                              <span className="block font-mono text-[9px] text-slate-400">
+                                Qty 1
+                              </span>
+                            </span>
+                            <span className="shrink-0 font-mono text-[10.5px] font-extrabold text-slate-900">
+                              {item.price}
+                            </span>
+                          </div>
+                        ))}
+                        <div className="mt-auto flex items-center justify-between border-t border-dashed border-slate-200 pt-2">
+                          <span className="text-[10.5px] font-bold text-slate-500">Total</span>
+                          <span className="font-mono text-[13px] font-extrabold text-slate-900">
+                            $128
+                          </span>
+                        </div>
+                        <span className="mb-1 flex items-center justify-center gap-1.5 rounded-lg bg-[#C61A1A] py-2 text-[10.5px] font-extrabold text-white">
+                          <CreditCard className="w-3.5 h-3.5" />
+                          Pay now
+                        </span>
+                      </motion.div>
+                    )}
+
+                    {/* ------------------------------------------ stats */}
+                    {screen === 2 && (
+                      <motion.div
+                        key="stats"
+                        initial={reduce ? false : { opacity: 0, x: 14 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={reduce ? undefined : { opacity: 0, x: -14 }}
+                        transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+                        className="absolute inset-0 flex flex-col gap-2 px-3 pt-1"
+                      >
+                        <span className="text-[12.5px] font-extrabold text-slate-900">
+                          This week
+                        </span>
+                        <div className="flex items-end justify-between">
+                          <span className="font-mono text-[20px] font-extrabold leading-none text-slate-900">
+                            $12,480
+                          </span>
+                          <span className="inline-flex items-center gap-1 rounded-md bg-red-50 px-1.5 py-0.5 text-[9.5px] font-extrabold text-[#C61A1A]">
+                            <TrendingUp className="w-3 h-3" />
+                            +18%
+                          </span>
+                        </div>
+                        <div className="flex h-20 items-end gap-1.5 rounded-xl border border-slate-200 p-2">
+                          {[38, 54, 44, 66, 80].map((h, i) => (
+                            <motion.span
+                              key={i}
+                              className={`flex-1 rounded-t ${
+                                i === 4 ? 'bg-[#C61A1A]' : 'bg-slate-200'
+                              }`}
+                              initial={reduce ? false : { height: 0 }}
+                              animate={{ height: `${h}%` }}
+                              transition={{
+                                duration: 0.5,
+                                delay: 0.15 + i * 0.09,
+                                ease: [0.22, 1, 0.36, 1],
+                              }}
+                            />
+                          ))}
+                        </div>
+                        <div className="flex items-center gap-2 rounded-xl border border-slate-200 p-2">
+                          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50">
+                            <BarChart3 className="w-3.5 h-3.5 text-[#C61A1A]" />
+                          </span>
+                          <span className="text-[10px] font-bold text-slate-600">
+                            Weekly report ready
+                          </span>
+                        </div>
+                        <span className="mt-auto mb-1 flex items-center justify-center rounded-lg border border-slate-200 py-2 text-[10.5px] font-extrabold text-slate-700">
+                          Export report
+                        </span>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* push notification */}
+                  <AnimatePresence>
+                    {notifOn && (
+                      <motion.div
+                        initial={reduce ? false : { opacity: 0, y: -18 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={reduce ? undefined : { opacity: 0, y: -18 }}
+                        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                        className="absolute inset-x-2 top-2 z-20 flex items-center gap-2 rounded-xl border border-slate-200 bg-white/95 px-2.5 py-2 shadow-[0_16px_34px_-20px_rgba(15,23,42,0.7)] backdrop-blur"
+                      >
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-[#C61A1A] text-white">
+                          <Bell className="w-3 h-3" />
+                        </span>
+                        <span className="min-w-0">
+                          <span className="block text-[10px] font-extrabold text-slate-900">
+                            Order #2841 confirmed
+                          </span>
+                          <span className="block truncate text-[9px] text-slate-500">
+                            Out for delivery — tap to track
+                          </span>
+                        </span>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* tab bar */}
+                <div className="relative flex border-t border-slate-100 bg-white">
+                  {RUN_TABS.map((tab, i) => {
+                    const active = screen === i;
+                    const Icon = tab.Icon;
+                    return (
+                      <span
+                        key={tab.label}
+                        className="relative flex flex-1 flex-col items-center gap-0.5 py-2"
+                      >
+                        {active && (
+                          <motion.span
+                            layoutId="run-tab"
+                            className="absolute inset-x-5 top-0 h-0.5 rounded-full bg-[#C61A1A]"
+                            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                          />
+                        )}
+                        <Icon
+                          className={`w-3.5 h-3.5 ${
+                            active ? 'text-[#C61A1A]' : 'text-slate-400'
+                          }`}
+                        />
+                        <span
+                          className={`text-[8.5px] font-extrabold ${
+                            active ? 'text-[#C61A1A]' : 'text-slate-400'
+                          }`}
+                        >
+                          {tab.label}
+                        </span>
+                        {tab.label === 'Cart' && (
+                          <span className="absolute right-[26%] top-1 h-1.5 w-1.5 rounded-full bg-[#C61A1A]" />
+                        )}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ---------------------------------------------------- pipeline */}
+          <div className="min-w-0 flex-1 space-y-3">
+            <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-3">
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-mono text-[9.5px] font-bold uppercase tracking-wider text-slate-500">
+                  release.pipeline
+                </span>
+                <span className="font-mono text-[9.5px] font-extrabold tabular-nums text-[#C61A1A]">
+                  {Math.round(progress)}%
+                </span>
+              </div>
+              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-200">
+                <motion.span
+                  className="block h-full rounded-full bg-[#C61A1A]"
+                  animate={{ width: `${progress}%` }}
+                  transition={{ duration: STEP_MS / 1000, ease: 'linear' }}
+                />
+              </div>
+
+              <div className="mt-2.5 space-y-1.5">
+                {RUN_STAGES.map((label, i) => {
+                  const done = stage >= i;
+                  return (
+                    <div key={label} className="flex items-center gap-2">
+                      <span
+                        className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full ${
+                          done ? 'bg-[#C61A1A] text-white' : 'border border-slate-300 bg-white'
+                        }`}
+                      >
+                        {done && <Check className="w-2.5 h-2.5" strokeWidth={4} />}
+                      </span>
+                      <span
+                        className={`truncate text-[11px] font-bold ${
+                          done ? 'text-slate-800' : 'text-slate-400'
+                        }`}
+                      >
+                        {label}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* metrics */}
+            <div className="grid grid-cols-2 gap-2">
+              {RUN_METRICS.map((m) => (
+                <div
+                  key={m.label}
+                  className="rounded-xl border border-slate-200 bg-white px-3 py-2"
+                >
+                  <span className="block text-[15px] font-extrabold tabular-nums leading-none text-slate-900">
+                    <CountUp value={m.value} />
+                  </span>
+                  <span className="mt-1 block font-mono text-[8.5px] font-bold uppercase tracking-wider text-slate-400">
+                    {m.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* stack */}
+            <div className="flex flex-wrap gap-1.5">
+              {RUN_STACK.map((s) => (
+                <span
+                  key={s}
+                  className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[10px] font-extrabold text-slate-600"
+                >
+                  {s}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* timeline readout (FAQ figures) */}
+        <div className="grid grid-cols-3 divide-x divide-slate-100 border-t border-slate-100 bg-slate-50/60">
+          {RUN_TIMELINE.map((m) => (
+            <div key={m.label} className="px-2 py-3 text-center">
+              <div className="text-[13px] sm:text-sm font-extrabold tabular-nums leading-none text-slate-900">
+                <CountUp value={m.value} />
+              </div>
+              <div className="mt-1 text-[9px] font-bold uppercase tracking-wider text-slate-400">
+                {m.label}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </motion.div>
   );
 };
+
+/** Small wireframe product glyph for the shop screen cards. */
+const ShoppingBagPlaceholder: React.FC = () => (
+  <svg viewBox="0 0 24 24" className="w-4 h-4 text-slate-400" fill="none" aria-hidden="true">
+    <path
+      d="M5 8h14l-1.2 11H6.2L5 8Z"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinejoin="round"
+    />
+    <path d="M9 8a3 3 0 0 1 6 0" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+  </svg>
+);
 
 /* ==========================================================================
    2. PROBLEM — drop-off funnel: ideas collapse at the thinking stage,

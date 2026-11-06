@@ -1,24 +1,30 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import {
   ArrowRight,
+  AtSign,
+  BadgeCheck,
   Check,
   CheckCircle2,
   Code2,
   Compass,
   Crosshair,
+  Eye,
   Facebook,
   Instagram,
   Linkedin,
   LineChart,
+  MessageCircle,
   Palette,
   PenTool,
   Repeat,
   Rocket,
   Search,
+  Share2,
   Target,
+  TrendingUp,
+  UserPlus,
 } from 'lucide-react';
-import { CountUp } from '../CountUp';
 import {
   SMM_FRAMEWORK,
   SMM_OUTCOMES,
@@ -66,177 +72,319 @@ export const PlatformGlyph: React.FC<{ id: SmmPlatformId; className?: string }> 
 };
 
 /* ==========================================================================
-   1. HERO ORBIT — five platforms and five disciplines circling the 5D
-   engine. Same radial language as the home wheel and the services
-   capability map: dashed tracks, counter-spinning chips, reactor hub.
+   1. HERO — "Account Boost": a live profile card. Followers, subscribers
+   and reach tick upward while the week's reach curve draws itself and
+   activity toasts fire — an account being boosted in real time.
    ========================================================================== */
 
-/** Outer ring — where the work publishes and amplifies. */
-const ORBIT_PLATFORMS: SmmPlatformId[] = ['facebook', 'instagram', 'twitter', 'linkedin', 'tiktok'];
+const BOOST_PLATFORMS: SmmPlatformId[] = ['facebook', 'instagram', 'twitter', 'linkedin', 'tiktok'];
 
-/** Inner ring — the disciplines the engine runs on every platform. */
-const ORBIT_DISCIPLINES = ['Strategy', 'Content', 'Paid Ads', 'Community', 'Analytics'];
+const BOOST_CHIPS = [
+  { label: 'Followers rising', Icon: TrendingUp, tone: 'red' },
+  { label: 'Reach growing', Icon: Eye, tone: 'plain' },
+  { label: 'Engagement up', Icon: MessageCircle, tone: 'plain' },
+] as const;
 
-/** Readout strip under the orbit — the numbers the system moves. */
-const ORBIT_READOUT = [
-  { label: 'Reach', value: '3X' },
-  { label: 'Engagement', value: '4.8%' },
-  { label: 'Leads / mo', value: '120+' },
-];
+const BOOST_TOASTS = [
+  { Icon: UserPlus, text: '+142 new followers today' },
+  { Icon: Eye, text: 'Post reached 48,209 people' },
+  { Icon: MessageCircle, text: '36 comments on your reel' },
+  { Icon: Share2, text: 'Reel shared 214 times' },
+] as const;
 
-export const SocialEngineHero: React.FC = () => {
+/** Reach over the last seven days — the last three days in brand red. */
+const REACH_BARS = [34, 48, 41, 62, 57, 78, 96] as const;
+
+const REACH_PTS = 'M 22 55 L 58 44 L 94 50 L 130 34 L 166 37 L 202 21 L 238 7';
+
+const REACH_DAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+
+/**
+ * Counts 0 -> target once on mount, then keeps ticking upward live (the
+ * account is being boosted while you watch). Interval-driven rather than
+ * rAF-only so it still completes when the tab is backgrounded, and jumps
+ * straight to the target when the user prefers reduced motion.
+ */
+const useCountTo = (target: number, duration = 1700, step = 0) => {
   const reduce = useReducedMotion();
-  const spin = (name: string) => (reduce ? '' : name);
+  const [n, setN] = useState(reduce ? target : 0);
 
-  /**
-   * One orbiting ring: rotate the frame to `angle`, un-tilt the chip, then
-   * counter-spin it so labels stay upright while the ring rotates — the
-   * same technique as the services capability map.
-   */
-  const orbitRing = (
-    inset: string,
-    ringSpin: string,
-    chipSpin: string,
-    chips: React.ReactNode[],
-    offset = 0,
-  ) => (
-    <div className={`absolute ${inset} ${spin(ringSpin)}`}>
-      {chips.map((chip, i) => {
-        const angle = (360 / chips.length) * i + offset;
-        return (
-          <div key={i} className="absolute inset-0" style={{ transform: `rotate(${angle}deg)` }}>
-            <div
-              className="absolute left-1/2 top-0"
-              style={{ transform: `translate(-50%, -50%) rotate(${-angle}deg)` }}
-            >
-              <div className={spin(chipSpin)}>{chip}</div>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
+  useEffect(() => {
+    if (reduce) {
+      setN(target);
+      return;
+    }
+    const start = performance.now();
+    const id = window.setInterval(() => {
+      const elapsed = performance.now() - start;
+      const p = Math.min(1, elapsed / duration);
+      const base = Math.round(target * (1 - Math.pow(1 - p, 3)));
+      // after the intro count-up settles, climb by `step` every ~1.6s
+      const live =
+        step > 0 && elapsed > duration + 600
+          ? Math.floor((elapsed - duration - 600) / 1600) * step
+          : 0;
+      setN(base + live);
+    }, 40);
+    return () => window.clearInterval(id);
+  }, [target, duration, step, reduce]);
 
-  const platformChips = ORBIT_PLATFORMS.map((id) => (
-    <span
-      key={id}
-      className="flex w-11 h-11 sm:w-12 sm:h-12 items-center justify-center rounded-2xl bg-white border border-slate-200 shadow-[0_10px_24px_-14px_rgba(15,23,42,0.45)]"
-    >
-      <PlatformGlyph id={id} className="w-5 h-5 text-[#C61A1A]" />
-    </span>
-  ));
+  return n;
+};
 
-  const disciplineChips = ORBIT_DISCIPLINES.map((name) => (
-    <span
-      key={name}
-      className="flex h-7 items-center whitespace-nowrap rounded-full bg-white border border-slate-200 px-3 text-[9px] font-extrabold uppercase tracking-[0.12em] text-slate-600 shadow-[0_8px_20px_-14px_rgba(15,23,42,0.4)]"
-    >
-      {name}
-    </span>
-  ));
+export const AccountBoostHero: React.FC = () => {
+  const reduce = useReducedMotion();
+  const [toast, setToast] = useState(0);
+
+  useEffect(() => {
+    if (reduce) return;
+    const id = window.setInterval(
+      () => setToast((t) => (t + 1) % BOOST_TOASTS.length),
+      2600,
+    );
+    return () => window.clearInterval(id);
+  }, [reduce]);
+
+  const followers = useCountTo(18400, 1700, 3);
+  const subscribers = useCountTo(6120, 1900, 1);
+  const reach = useCountTo(48200, 2100, 47);
+  const ActiveToast = BOOST_TOASTS[toast].Icon;
 
   return (
-    <div className="w-full rounded-3xl border border-slate-200 bg-white overflow-hidden shadow-[0_30px_70px_-42px_rgba(15,23,42,0.45)]">
-      {/* console header */}
-      <div className="flex items-center justify-between px-4 py-2.5 border-b border-slate-100 bg-slate-50/80">
-        <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-500">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#C61A1A] animate-pulse" />
-          Live Growth System
-        </span>
-        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-          Social · 5D Engine
-        </span>
+    <motion.div
+      className="relative w-full"
+      animate={reduce ? undefined : { y: [0, -6, 0] }}
+      transition={reduce ? undefined : { duration: 6.5, repeat: Infinity, ease: 'easeInOut' }}
+    >
+      <div
+        className="absolute inset-2 sm:inset-6 bg-[radial-gradient(ellipse_at_50%_45%,rgba(198,26,26,0.12),transparent_70%)] blur-2xl pointer-events-none"
+        aria-hidden="true"
+      />
+
+      {/* chips above the visual */}
+      <div className="relative mb-3 flex flex-wrap items-center gap-2">
+        {BOOST_CHIPS.map(({ label, Icon, tone }, i) => (
+          <motion.span
+            key={label}
+            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-extrabold shadow-[0_14px_30px_-18px_rgba(15,23,42,0.45)] ${
+              tone === 'red'
+                ? 'border-red-200 bg-red-50 text-[#C61A1A]'
+                : 'border-slate-200 bg-white text-slate-700'
+            }`}
+            initial={reduce ? false : { opacity: 0, y: 10 }}
+            animate={reduce ? undefined : { opacity: 1, y: [0, -7, 0] }}
+            transition={
+              reduce
+                ? undefined
+                : {
+                    opacity: { duration: 0.5, delay: 0.5 + i * 0.15 },
+                    y: { duration: 3.4, repeat: Infinity, delay: i * 0.6, ease: 'easeInOut' },
+                  }
+            }
+          >
+            <Icon className="w-3.5 h-3.5" />
+            {label}
+          </motion.span>
+        ))}
       </div>
 
-      <div className="p-4 sm:p-5">
-        {/* ------------------------------------------------------ orbit map */}
-        <div className="relative w-full max-w-[430px] aspect-square mx-auto" aria-hidden="true">
-          {/* soft red glow behind the hub */}
-          <div
-            className="absolute inset-[16%] rounded-full blur-2xl opacity-70 pointer-events-none"
-            style={{
-              background: 'radial-gradient(circle, rgba(198,26,26,0.16) 0%, transparent 70%)',
-            }}
-          />
-
-          {/* corner captions */}
-          <span className="absolute left-0 top-1 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border border-slate-200 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-slate-500 shadow-xs">
+      <div
+        className="relative rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-[0_36px_80px_-42px_rgba(15,23,42,0.6)]"
+        role="img"
+        aria-label="A live social profile card where followers, subscribers and reach count upward while the week's reach chart draws itself and activity notifications fire"
+      >
+        {/* window header */}
+        <div className="flex items-center gap-2.5 border-b border-slate-100 bg-slate-50/70 px-4 py-2.5">
+          <span className="hidden sm:flex gap-1.5 shrink-0" aria-hidden="true">
+            <span className="h-2.5 w-2.5 rounded-full bg-slate-300" />
+            <span className="h-2.5 w-2.5 rounded-full bg-slate-300" />
+            <span className="h-2.5 w-2.5 rounded-full bg-slate-300" />
+          </span>
+          <span className="ml-1 font-mono text-[10.5px] font-bold text-slate-600">
+            digivibz.social
+          </span>
+          <span className="ml-auto inline-flex items-center gap-1.5 rounded-md border border-red-200 bg-red-50 px-2 py-0.5 font-mono text-[9.5px] font-extrabold text-[#C61A1A]">
             <span className="w-1.5 h-1.5 rounded-full bg-[#C61A1A] animate-pulse" />
-            Always On
+            LIVE
           </span>
-          <span className="absolute right-0 bottom-1 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-50 border border-red-200 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-[#C61A1A] shadow-xs">
-            5 Platforms
-          </span>
+        </div>
 
-          {/* ring tracks */}
-          <div className="absolute inset-[8%] rounded-full border border-dashed border-slate-200" />
-          <div className="absolute inset-[26%] rounded-full border border-dashed border-red-100" />
-          <div
-            className={`absolute inset-[17%] rounded-full border border-dashed border-slate-100 ${spin(
-              'dz-spin',
-            )}`}
-          />
+        <div className="p-3.5 sm:p-4">
+          <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] gap-3">
+            {/* profile + counters */}
+            <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-3">
+              <div className="flex items-center gap-2.5">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#C61A1A] text-white shadow-[0_12px_24px_-14px_rgba(198,26,26,0.9)]">
+                  <AtSign className="w-5 h-5" />
+                </span>
+                <span className="min-w-0">
+                  <span className="flex items-center gap-1 text-[13px] font-extrabold text-slate-900">
+                    Digivibz
+                    <BadgeCheck className="w-3.5 h-3.5 text-[#C61A1A]" />
+                  </span>
+                  <span className="block font-mono text-[10px] text-slate-500">@digivibz</span>
+                </span>
+              </div>
 
-          {/* outer orbit: platform chips */}
-          {orbitRing('inset-[8%]', 'dz-spin', 'dz-spin-rev', platformChips)}
+              <div className="mt-3 grid grid-cols-3 gap-1.5">
+                {[
+                  { label: 'Followers', value: followers, delta: '+12%' },
+                  { label: 'Subscribers', value: subscribers, delta: '+8%' },
+                  { label: 'Reach', value: reach, delta: '+64%', red: true },
+                ].map((s) => (
+                  <div key={s.label}>
+                    <span className="block font-mono text-[8.5px] font-bold uppercase tracking-wider text-slate-400">
+                      {s.label}
+                    </span>
+                    <span
+                      className={`block text-[15px] sm:text-base font-extrabold tabular-nums leading-tight ${
+                        s.red ? 'text-[#C61A1A]' : 'text-slate-900'
+                      }`}
+                    >
+                      {s.value.toLocaleString('en-US')}
+                    </span>
+                    <span className="block text-[9px] font-extrabold text-[#C61A1A]">{s.delta}</span>
+                  </div>
+                ))}
+              </div>
 
-          {/* inner orbit: discipline pills, opposite direction */}
-          {orbitRing('inset-[26%]', 'dz-spin-back', 'dz-spin-back-rev', disciplineChips, 18)}
+              <div className="mt-3 border-t border-slate-200 pt-2.5">
+                <span className="block font-mono text-[8.5px] font-bold uppercase tracking-wider text-slate-400">
+                  Publishing to
+                </span>
+                <div className="mt-1.5 flex items-center gap-2">
+                  {BOOST_PLATFORMS.map((id) => (
+                    <span
+                      key={id}
+                      className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 bg-white"
+                    >
+                      <PlatformGlyph id={id} className="w-3.5 h-3.5 text-[#C61A1A]" />
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
 
-          {/* pulse halo */}
-          {!reduce && (
-            <div className="absolute inset-0 m-auto w-[34%] h-[34%] rounded-full border-2 border-[#C61A1A]/45 dz-pulse-ring pointer-events-none" />
-          )}
+            {/* reach chart */}
+            <div className="rounded-xl border border-slate-200 bg-white p-3">
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-mono text-[8.5px] font-bold uppercase tracking-wider text-slate-400">
+                  Reach · last 7 days
+                </span>
+                <span className="rounded-md bg-[#C61A1A] px-1.5 py-0.5 font-mono text-[9px] font-extrabold text-white">
+                  +64%
+                </span>
+              </div>
 
-          {/* reactor hub */}
-          <div className="absolute inset-0 m-auto w-[34%] h-[34%] rounded-full bg-[#18181B] border border-[#C61A1A]/70 text-white flex flex-col items-center justify-center text-center shadow-[0_24px_60px_-18px_rgba(198,26,26,0.55)]">
-            <span className="text-xl sm:text-3xl font-extrabold leading-none tracking-tight">
-              5<span className="text-[#C61A1A]">d</span>
-            </span>
-            <span className="mt-1 text-[7px] sm:text-[8px] font-bold uppercase tracking-[0.14em] text-white/75">
-              Social Engine
-            </span>
-            <span className="hidden sm:block mt-1 pt-1 w-[64%] border-t border-white/25 text-[7px] font-semibold uppercase tracking-[0.1em] text-white/60">
-              5 Disciplines
-            </span>
+              <svg viewBox="0 0 272 104" className="mt-1 block w-full h-auto" aria-hidden="true">
+                {[24, 46, 68].map((y) => (
+                  <line key={y} x1="8" y1={y} x2="264" y2={y} stroke="#F1F5F9" strokeWidth="1" />
+                ))}
+                {REACH_BARS.map((v, i) => {
+                  const h = v * 0.78;
+                  const red = i >= 4;
+                  const opacity = i === 4 ? 0.4 : i === 5 ? 0.7 : 1;
+                  return (
+                    <rect
+                      key={i}
+                      x={12 + i * 36}
+                      y={86 - h}
+                      width="20"
+                      height={h}
+                      rx="3"
+                      fill={red ? '#C61A1A' : '#E2E8F0'}
+                      opacity={red ? opacity : 1}
+                    />
+                  );
+                })}
+                <motion.path
+                  d={REACH_PTS}
+                  fill="none"
+                  stroke="#C61A1A"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  initial={reduce ? false : { pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 1.3, delay: 0.5, ease: 'easeOut' }}
+                />
+                <motion.circle
+                  cx="238"
+                  cy="7"
+                  r="4"
+                  fill="#C61A1A"
+                  stroke="#fff"
+                  strokeWidth="2"
+                  initial={reduce ? false : { scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.3, delay: 1.7 }}
+                />
+                {REACH_DAYS.map((d, i) => (
+                  <text
+                    key={i}
+                    x={22 + i * 36}
+                    y={99}
+                    fontSize="7.5"
+                    fontWeight="700"
+                    fill="#94A3B8"
+                    textAnchor="middle"
+                    style={{ fontFamily: 'monospace' }}
+                  >
+                    {d}
+                  </text>
+                ))}
+              </svg>
+
+              <div className="mt-1.5 flex items-center justify-between gap-2 rounded-lg border border-red-100 bg-red-50/60 px-2.5 py-1.5">
+                <span className="text-[10px] font-extrabold text-slate-700">
+                  Impressions converting to follows
+                </span>
+                <TrendingUp className="w-3.5 h-3.5 shrink-0 text-[#C61A1A]" />
+              </div>
+            </div>
+          </div>
+
+          {/* activity toast */}
+          <div className="mt-3 flex min-h-[44px] items-center rounded-xl border border-red-100 bg-red-50/60 px-3 py-2">
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={toast}
+                initial={reduce ? false : { opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reduce ? undefined : { opacity: 0, y: -8 }}
+                transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                className="flex w-full items-center gap-2"
+              >
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#C61A1A] text-white">
+                  <ActiveToast className="w-3 h-3" />
+                </span>
+                <span className="truncate text-[11.5px] font-bold text-slate-700">
+                  {BOOST_TOASTS[toast].text}
+                </span>
+                <span className="ml-auto shrink-0 font-mono text-[9px] text-slate-400">now</span>
+              </motion.span>
+            </AnimatePresence>
           </div>
         </div>
 
-        {/* ------------------------------------------------------ readout */}
-        <div className="mt-4 grid grid-cols-3 gap-2 border-t border-slate-100 pt-3.5">
-          {ORBIT_READOUT.map((metric) => (
-            <div
-              key={metric.label}
-              className="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2"
-            >
-              <span className="block text-[8px] font-bold uppercase tracking-[0.14em] text-slate-400">
-                {metric.label}
-              </span>
-              <span className="mt-0.5 block text-lg sm:text-xl font-extrabold text-[#18181B] tabular-nums leading-none">
-                <CountUp value={metric.value} />
-              </span>
-            </div>
-          ))}
+        {/* kinetic ticker */}
+        <div className="border-t border-slate-100 bg-slate-50/70 py-2 overflow-hidden dz-marquee">
+          <div
+            className="dz-marquee-track flex w-max items-center gap-6 text-[10px] font-extrabold uppercase tracking-[0.22em] text-slate-400"
+            style={{ animationDuration: '26s' }}
+          >
+            {[...Array(2)].flatMap((_, dup) =>
+              ['Followers', 'Subscribers', 'Reach', 'Engagement', 'Views'].map((word) => (
+                <span key={`${dup}-${word}`} className="flex items-center gap-6 whitespace-nowrap">
+                  {word}
+                  <span className="w-1.5 h-1.5 bg-[#C61A1A] rotate-45" />
+                </span>
+              )),
+            )}
+          </div>
         </div>
       </div>
-
-      {/* kinetic ticker */}
-      <div className="border-t border-slate-100 bg-[#18181B] py-2 overflow-hidden dz-marquee">
-        <div
-          className="dz-marquee-track flex w-max items-center gap-6 text-[10px] font-extrabold uppercase tracking-[0.22em] text-white/70"
-          style={{ animationDuration: '26s' }}
-        >
-          {[...Array(2)].flatMap((_, dup) =>
-            ['Strategy', 'Content', 'Targeting', 'Optimization', 'Revenue'].map((word) => (
-              <span key={`${dup}-${word}`} className="flex items-center gap-6 whitespace-nowrap">
-                {word}
-                <span className="w-1.5 h-1.5 bg-[#C61A1A] rotate-45" />
-              </span>
-            )),
-          )}
-        </div>
-      </div>
-    </div>
+    </motion.div>
   );
 };
 
