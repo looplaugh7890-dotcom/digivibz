@@ -39,6 +39,8 @@ import { GmbServicePage } from './pages/GmbServicePage';
 import { WebServicePage } from './pages/WebServicePage';
 
 import { WebDesignServicePage } from './pages/WebDesignServicePage';
+
+import { EmailServicePage } from './pages/EmailServicePage';
 import { CaseStudy } from './types';
 
 type Route = 'home' | 'about' | 'contact' | 'portfolio' | 'services' | 'service' | 'caseStudy' | 'admin' | 'refundPolicy' | 'privacyPolicy' | 'terms' | 'disclaimer' | 'legalNotice';
@@ -205,6 +207,8 @@ export default function App() {
                 <WebServicePage onOpenAudit={handleOpenAudit} />
               ) : serviceSlug === 'web-designing' ? (
                 <WebDesignServicePage onOpenAudit={handleOpenAudit} />
+              ) : serviceSlug === 'email-marketing' ? (
+                <EmailServicePage onOpenAudit={handleOpenAudit} />
               ) : (
                 /* Unknown service slug → the catalog, so 404-ish URLs stay useful. */
                 <ServicesPage onOpenAudit={handleOpenAudit} />

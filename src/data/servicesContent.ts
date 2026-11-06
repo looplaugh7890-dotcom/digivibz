@@ -170,6 +170,7 @@ export const SERVICE_DETAIL_SLUGS: string[] = [
   'google-my-business',
   'web-development',
   'web-designing',
+  'email-marketing',
 ];
 
 /** "One system" diagram — inputs on the left, outcomes on the right. */
