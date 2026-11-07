@@ -176,6 +176,7 @@ export const SERVICE_DETAIL_SLUGS: string[] = [
   'ai-automation',
   'google-ads-agency',
   'seo-services',
+  'ai-seo-services',
 ];
 
 /** "One system" diagram — inputs on the left, outcomes on the right. */

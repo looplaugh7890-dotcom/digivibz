@@ -47,6 +47,7 @@ import { InfluencerMarketingServicePage } from './pages/InfluencerMarketingServi
 import { AiAutomationServicePage } from './pages/AiAutomationServicePage';
 import { GoogleAdsServicePage } from './pages/GoogleAdsServicePage';
 import { SeoServicePage } from './pages/SeoServicePage';
+import { AiSeoServicePage } from './pages/AiSeoServicePage';
 import { CaseStudy } from './types';
 
 type Route = 'home' | 'about' | 'contact' | 'portfolio' | 'services' | 'service' | 'caseStudy' | 'admin' | 'refundPolicy' | 'privacyPolicy' | 'terms' | 'disclaimer' | 'legalNotice';
@@ -225,6 +226,8 @@ export default function App() {
                 <GoogleAdsServicePage onOpenAudit={handleOpenAudit} />
               ) : serviceSlug === 'seo-services' ? (
                 <SeoServicePage onOpenAudit={handleOpenAudit} />
+              ) : serviceSlug === 'ai-seo-services' ? (
+                <AiSeoServicePage onOpenAudit={handleOpenAudit} />
               ) : (
                 /* Unknown service slug → the catalog, so 404-ish URLs stay useful. */
                 <ServicesPage onOpenAudit={handleOpenAudit} />
