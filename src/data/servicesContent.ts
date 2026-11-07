@@ -172,6 +172,7 @@ export const SERVICE_DETAIL_SLUGS: string[] = [
   'web-designing',
   'email-marketing',
   'video-editing',
+  'influencer-marketing',
 ];
 
 /** "One system" diagram — inputs on the left, outcomes on the right. */
