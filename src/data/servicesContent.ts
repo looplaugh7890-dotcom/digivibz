@@ -174,6 +174,7 @@ export const SERVICE_DETAIL_SLUGS: string[] = [
   'video-editing',
   'influencer-marketing',
   'ai-automation',
+  'google-ads-agency',
 ];
 
 /** "One system" diagram — inputs on the left, outcomes on the right. */
