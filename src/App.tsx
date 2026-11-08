@@ -20,6 +20,7 @@ import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
 import { PortfolioPage } from './pages/PortfolioPage';
 import { ServicesPage } from './pages/ServicesPage';
+import { CaseStudiesPage } from './pages/CaseStudiesPage';
 import { CaseStudyPage } from './pages/CaseStudyPage';
 import { AdminPage } from './pages/AdminPage';
 import { RefundPolicyPage } from './pages/RefundPolicyPage';
@@ -50,7 +51,7 @@ import { SeoServicePage } from './pages/SeoServicePage';
 import { AiSeoServicePage } from './pages/AiSeoServicePage';
 import { CaseStudy } from './types';
 
-type Route = 'home' | 'about' | 'contact' | 'portfolio' | 'services' | 'service' | 'caseStudy' | 'admin' | 'refundPolicy' | 'privacyPolicy' | 'terms' | 'disclaimer' | 'legalNotice';
+type Route = 'home' | 'about' | 'contact' | 'portfolio' | 'services' | 'service' | 'caseStudies' | 'caseStudy' | 'admin' | 'refundPolicy' | 'privacyPolicy' | 'terms' | 'disclaimer' | 'legalNotice';
 
 /** Hash routes (vs. home-page anchors like `#services`). */
 const routeFromHash = (hash: string): Route =>
@@ -64,6 +65,8 @@ const routeFromHash = (hash: string): Route =>
           ? 'services'
           : hash.startsWith('#/service/')
             ? 'service'
+            : hash === '#/case-studies' || hash.startsWith('#/case-studies?')
+              ? 'caseStudies'
             : hash.startsWith('#/case-study/')
               ? 'caseStudy'
             : hash === '#/admin' || hash.startsWith('#/admin?')
@@ -232,6 +235,8 @@ export default function App() {
                 /* Unknown service slug → the catalog, so 404-ish URLs stay useful. */
                 <ServicesPage onOpenAudit={handleOpenAudit} />
               )
+            ) : route === 'caseStudies' ? (
+              <CaseStudiesPage onOpenAudit={handleOpenAudit} />
             ) : route === 'caseStudy' ? (
               <CaseStudyPage slug={caseStudySlug} onOpenAudit={handleOpenAudit} />
             ) : route === 'refundPolicy' ? (

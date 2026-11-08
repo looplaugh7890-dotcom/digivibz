@@ -184,11 +184,11 @@ export const CaseStudyPage: React.FC<CaseStudyPageProps> = ({ slug, onOpenAudit 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.a
             {...rise(0)}
-            href="#/portfolio"
+            href="#/case-studies"
             className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-[#C61A1A] transition-colors group"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            Back to Portfolio
+            Back to Case Studies
           </motion.a>
 
           <div className="mt-7 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 lg:items-center">
@@ -361,7 +361,7 @@ export const CaseStudyPage: React.FC<CaseStudyPageProps> = ({ slug, onOpenAudit 
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
             <a
-              href="#/portfolio"
+              href="#/case-studies"
               className="inline-flex items-center justify-center gap-2 px-7 py-3.5 border border-white/50 hover:bg-white/10 text-white font-semibold text-sm sm:text-base rounded-xl transition-all"
             >
               View More Case Studies

@@ -13,7 +13,7 @@ const NAV_LINKS = [
   { label: 'About', href: '#/about' },
   { label: 'Portfolio', href: '#/portfolio' },
   { label: 'Services', href: '#/services' },
-  { label: 'Case Studies', href: '#case-studies' },
+  { label: 'Case Studies', href: '#/case-studies' },
   { label: '5D Framework', href: '#framework' },
   { label: 'Resources', href: '#faqs' },
   { label: 'Contact', href: '#/contact' },
@@ -109,9 +109,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAudit }) => {
         ticking = false;
         return;
       }
-      if (isPageHash(hash, '#/portfolio') || hash.startsWith('#/case-study/')) {
-        // Case-study pages belong to the Portfolio nav item.
+      if (isPageHash(hash, '#/portfolio')) {
         setActiveHref('#/portfolio');
+        ticking = false;
+        return;
+      }
+      if (isPageHash(hash, '#/case-studies') || hash.startsWith('#/case-study/')) {
+        // The index page and every study detail highlight Case Studies.
+        setActiveHref('#/case-studies');
         ticking = false;
         return;
       }
