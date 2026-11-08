@@ -309,67 +309,71 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAudit }) => {
             initial="hidden"
             animate="show"
             exit="hidden"
-            className="hidden lg:block absolute left-0 right-0 top-full bg-white border-b border-slate-200 shadow-[0_28px_56px_-28px_rgba(15,23,42,0.3)]"
+            className="hidden lg:block absolute left-0 right-0 top-full"
           >
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-5">
-              <div className="grid grid-cols-4 gap-x-6 xl:gap-x-9 gap-y-1">
-                {MEGA_COLUMNS.map((col) => (
-                  <motion.div key={col.id} variants={megaColumn}>
-                    <p className="flex items-baseline justify-between gap-2 border-b border-slate-100 pb-2 mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400">
-                      <span>{col.label}</span>
-                      <span className="text-[#C61A1A]">{col.items.length}</span>
-                    </p>
-                    {col.items.map((item) => {
-                      const Icon = item.icon;
-                      return (
-                        <motion.a
-                          key={item.slug}
-                          href={`#/service/${item.slug}`}
-                          variants={megaItem}
-                          onClick={closeMega}
-                          className="group -mx-2 flex items-start gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-red-50/70"
-                        >
-                          <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500 ring-1 ring-slate-200 transition-all group-hover:bg-[#C61A1A] group-hover:text-white group-hover:ring-[#C61A1A]">
-                            <Icon className="h-4 w-4" />
-                          </span>
-                          <span className="min-w-0 flex-1">
-                            <span className="flex items-center gap-1.5 text-[13.5px] font-semibold leading-tight text-slate-800 transition-colors group-hover:text-[#C61A1A]">
-                              {item.name}
-                              <ArrowRight className="h-3 w-3 shrink-0 -translate-x-1 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100" />
-                            </span>
-                            <span className="mt-0.5 block text-[12px] leading-snug text-slate-500 line-clamp-2">
-                              {item.description}
-                            </span>
-                          </span>
-                        </motion.a>
-                      );
-                    })}
-                  </motion.div>
-                ))}
-              </div>
+            <div className="mx-auto w-[min(1152px,calc(100%_-_2rem))] rounded-b-2xl border border-t-0 border-slate-200 bg-white shadow-[0_28px_56px_-28px_rgba(15,23,42,0.3)]">
+              <div className="px-6 pt-4 pb-3.5">
+                <div className="grid grid-cols-5 gap-x-6">
+                  {MEGA_COLUMNS.map((col) => (
+                    <motion.div
+                      key={col.id}
+                      variants={megaColumn}
+                      className={col.id === 'growth' ? 'col-span-2' : undefined}
+                    >
+                      <p className="flex items-baseline justify-between gap-2 border-b border-slate-100 pb-1.5 mb-1.5 text-[10.5px] font-bold uppercase tracking-[0.14em] text-slate-400">
+                        <span>{col.label}</span>
+                        <span className="text-[#C61A1A]">{col.items.length}</span>
+                      </p>
+                      <div className={col.id === 'growth' ? 'grid grid-cols-2 gap-x-5' : undefined}>
+                        {col.items.map((item) => {
+                          const Icon = item.icon;
+                          return (
+                            <motion.a
+                              key={item.slug}
+                              href={`#/service/${item.slug}`}
+                              variants={megaItem}
+                              onClick={closeMega}
+                              title={item.description}
+                              className="group -mx-2 flex items-center gap-2.5 rounded-lg px-2 py-[6px] transition-colors hover:bg-red-50/70"
+                            >
+                              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-slate-100 text-slate-500 ring-1 ring-slate-200 transition-all group-hover:bg-[#C61A1A] group-hover:text-white group-hover:ring-[#C61A1A]">
+                                <Icon className="h-3.5 w-3.5" />
+                              </span>
+                              <span className="min-w-0 flex-1 text-[13px] font-semibold leading-snug text-slate-700 transition-colors group-hover:text-[#C61A1A]">
+                                {item.name}
+                              </span>
+                              <ArrowRight className="h-3.5 w-3.5 shrink-0 -translate-x-1 text-slate-300 opacity-0 transition-all group-hover:translate-x-0 group-hover:text-[#C61A1A] group-hover:opacity-100" />
+                            </motion.a>
+                          );
+                        })}
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
 
-              <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4">
-                <a
-                  href="#/services"
-                  onClick={closeMega}
-                  className="group inline-flex items-center gap-1.5 text-sm font-semibold text-slate-600 transition-colors hover:text-[#C61A1A]"
-                >
-                  <span>View all services</span>
-                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-                </a>
-                <div className="flex items-center gap-4">
-                  <span className="hidden xl:inline text-xs text-slate-400">
-                    Not sure where to start? The audit will tell you.
-                  </span>
-                  <button
-                    onClick={() => {
-                      closeMega();
-                      onOpenAudit();
-                    }}
-                    className="dz-btn-shine rounded-lg bg-[#C61A1A] px-4 py-2 text-[13px] font-semibold text-white transition-colors hover:bg-[#9E1414] cursor-pointer"
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-3">
+                  <a
+                    href="#/services"
+                    onClick={closeMega}
+                    className="group inline-flex items-center gap-1.5 text-[13px] font-semibold text-slate-600 transition-colors hover:text-[#C61A1A]"
                   >
-                    Get Free Growth Audit
-                  </button>
+                    <span>View all services</span>
+                    <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                  </a>
+                  <div className="flex items-center gap-4">
+                    <span className="hidden xl:inline text-xs text-slate-400">
+                      Not sure where to start? The audit will tell you.
+                    </span>
+                    <button
+                      onClick={() => {
+                        closeMega();
+                        onOpenAudit();
+                      }}
+                      className="dz-btn-shine rounded-lg bg-[#C61A1A] px-3.5 py-1.5 text-[12.5px] font-semibold text-white transition-colors hover:bg-[#9E1414] cursor-pointer"
+                    >
+                      Get Free Growth Audit
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
