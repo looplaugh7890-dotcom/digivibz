@@ -189,9 +189,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAudit }) => {
     };
   }, []);
 
-  // Close the drawer automatically when the viewport grows to desktop
+  // Close the drawer automatically when the viewport grows to desktop nav
   useEffect(() => {
-    const mq = window.matchMedia('(min-width: 640px)');
+    const mq = window.matchMedia('(min-width: 1024px)');
     const onChange = (e: MediaQueryListEvent) => {
       if (e.matches) setMobileMenuOpen(false);
     };
@@ -282,10 +282,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAudit }) => {
           </button>
         </div>
 
-        <div className="flex sm:hidden items-center gap-2">
+        <div className="flex lg:hidden items-center gap-2">
           <button
             onClick={onOpenAudit}
-            className="px-3 py-1.5 text-xs font-semibold text-white bg-[#C61A1A] rounded-md"
+            className="sm:hidden px-3 py-1.5 text-xs font-semibold text-white bg-[#C61A1A] rounded-md"
           >
             Audit
           </button>
@@ -386,7 +386,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAudit }) => {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="sm:hidden overflow-hidden border-t border-slate-100 bg-white"
+            className="lg:hidden overflow-hidden border-t border-slate-100 bg-white"
           >
             <div className="px-4 pt-3 pb-6 space-y-1">
               {NAV_LINKS.map((link, i) => (
