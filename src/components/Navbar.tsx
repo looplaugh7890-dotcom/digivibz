@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
-import { ArrowRight, Menu, X } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion, type Variants } from 'motion/react';
+import { ArrowRight, ChevronDown, Menu, X } from 'lucide-react';
 import { Logo } from './Logo';
+import { SERVICE_CATEGORIES, SERVICES } from '../data/servicesContent';
 
 interface NavbarProps {
   onOpenAudit: () => void;
@@ -21,10 +22,77 @@ const NAV_LINKS = [
 /** True while a dedicated page route (hash-based) is active. */
 const isPageHash = (hash: string, page: string) => hash === page || hash.startsWith(page + '?');
 
+/** All 15 services grouped into their four catalog disciplines, for the mega menu. */
+const MEGA_COLUMNS = SERVICE_CATEGORIES.map((cat) => ({
+  ...cat,
+  items: SERVICES.filter((s) => s.category === cat.id),
+}));
+
+/* Staggered entrance for the mega menu: panel → columns → items. */
+const megaPanel: Variants = {
+  hidden: { opacity: 0, y: -10, transition: { duration: 0.16, ease: [0.4, 0, 1, 1] } },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.22,
+      ease: [0.22, 1, 0.36, 1],
+      staggerChildren: 0.05,
+      delayChildren: 0.04,
+    },
+  },
+};
+const megaColumn: Variants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.028 } },
+};
+const megaItem: Variants = {
+  hidden: { opacity: 0, y: 6 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] } },
+};
+
 export const Navbar: React.FC<NavbarProps> = ({ onOpenAudit }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeHref, setActiveHref] = useState('#home');
+  const [megaOpen, setMegaOpen] = useState(false);
+  const megaCloseTimer = useRef<number | null>(null);
+
+  // Hover-intent helpers: open instantly, close after a short grace period so
+  // the pointer can travel from the nav link down into the panel.
+  const clearMegaClose = () => {
+    if (megaCloseTimer.current !== null) {
+      window.clearTimeout(megaCloseTimer.current);
+      megaCloseTimer.current = null;
+    }
+  };
+  const openMega = () => {
+    clearMegaClose();
+    setMegaOpen(true);
+  };
+  const closeMega = () => {
+    clearMegaClose();
+    setMegaOpen(false);
+  };
+  const scheduleCloseMega = (delay = 180) => {
+    clearMegaClose();
+    megaCloseTimer.current = window.setTimeout(() => setMegaOpen(false), delay);
+  };
+
+  // The mega menu closes on navigation (any route/anchor change) and on Escape.
+  useEffect(() => {
+    const onHash = () => setMegaOpen(false);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMegaOpen(false);
+    };
+    window.addEventListener('hashchange', onHash);
+    window.addEventListener('keydown', onKey);
+    return () => {
+      window.removeEventListener('hashchange', onHash);
+      window.removeEventListener('keydown', onKey);
+      if (megaCloseTimer.current !== null) window.clearTimeout(megaCloseTimer.current);
+    };
+  }, []);
 
   // Shadow once the page is scrolled + scrollspy for the active link
   useEffect(() => {
@@ -136,6 +204,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAudit }) => {
       className={`sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md border-b transition-all duration-300 ${
         scrolled ? 'border-slate-200 shadow-[0_4px_24px_-12px_rgba(15,23,42,0.25)]' : 'border-slate-100'
       }`}
+      onMouseLeave={() => scheduleCloseMega()}
     >
       {/* Announcement bar */}
       <div className="bg-black text-white text-xs sm:text-[13px] py-2 px-4 font-normal text-center flex flex-wrap items-center justify-center gap-2 tracking-tight">
@@ -156,22 +225,40 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAudit }) => {
 
       {/* Main navigation */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-3 xl:gap-6">
-        <a href="#home" className="shrink-0 flex items-center py-2 transition-transform hover:scale-[1.02]">
+        <a
+          href="#home"
+          className="shrink-0 flex items-center py-2 transition-transform hover:scale-[1.02]"
+          onMouseEnter={closeMega}
+        >
           <Logo size="lg" />
         </a>
 
         <nav className="hidden lg:flex items-center gap-2.5 xl:gap-7 text-sm xl:text-[15px] font-medium text-slate-800">
           {NAV_LINKS.map((link) => {
             const isActive = activeHref === link.href;
+            const isServices = link.label === 'Services';
             return (
               <a
                 key={link.label}
                 href={link.href}
+                aria-haspopup={isServices ? 'true' : undefined}
+                aria-expanded={isServices ? megaOpen : undefined}
+                onMouseEnter={() => (isServices ? openMega() : closeMega())}
+                onFocus={() => isServices && openMega()}
                 className={`relative py-1 whitespace-nowrap transition-colors ${
                   isActive ? 'text-[#C61A1A]' : 'hover:text-[#C61A1A]'
                 }`}
               >
-                {link.label}
+                <span className="inline-flex items-center gap-1">
+                  {link.label}
+                  {isServices && (
+                    <ChevronDown
+                      className={`w-3.5 h-3.5 transition-transform duration-300 ${
+                        megaOpen ? 'rotate-180' : ''
+                      }`}
+                    />
+                  )}
+                </span>
                 {isActive && (
                   <motion.span
                     layoutId="nav-underline"
@@ -188,6 +275,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAudit }) => {
         <div className="hidden sm:flex items-center gap-4 shrink-0">
           <button
             onClick={onOpenAudit}
+            onMouseEnter={closeMega}
             className="dz-btn-shine px-5 xl:px-6 py-2.5 text-sm font-semibold text-white bg-[#C61A1A] hover:bg-[#9E1414] rounded-lg shadow-sm hover:shadow transition-all whitespace-nowrap cursor-pointer active:scale-[0.99]"
           >
             Get Free Growth Audit
@@ -211,6 +299,83 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAudit }) => {
           </button>
         </div>
       </div>
+
+      {/* Desktop mega menu — all fifteen services, grouped by discipline */}
+      <AnimatePresence>
+        {megaOpen && (
+          <motion.div
+            key="mega-menu"
+            variants={megaPanel}
+            initial="hidden"
+            animate="show"
+            exit="hidden"
+            className="hidden lg:block absolute left-0 right-0 top-full bg-white border-b border-slate-200 shadow-[0_28px_56px_-28px_rgba(15,23,42,0.3)]"
+          >
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-5">
+              <div className="grid grid-cols-4 gap-x-6 xl:gap-x-9 gap-y-1">
+                {MEGA_COLUMNS.map((col) => (
+                  <motion.div key={col.id} variants={megaColumn}>
+                    <p className="flex items-baseline justify-between gap-2 border-b border-slate-100 pb-2 mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400">
+                      <span>{col.label}</span>
+                      <span className="text-[#C61A1A]">{col.items.length}</span>
+                    </p>
+                    {col.items.map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <motion.a
+                          key={item.slug}
+                          href={`#/service/${item.slug}`}
+                          variants={megaItem}
+                          onClick={closeMega}
+                          className="group -mx-2 flex items-start gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-red-50/70"
+                        >
+                          <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500 ring-1 ring-slate-200 transition-all group-hover:bg-[#C61A1A] group-hover:text-white group-hover:ring-[#C61A1A]">
+                            <Icon className="h-4 w-4" />
+                          </span>
+                          <span className="min-w-0 flex-1">
+                            <span className="flex items-center gap-1.5 text-[13.5px] font-semibold leading-tight text-slate-800 transition-colors group-hover:text-[#C61A1A]">
+                              {item.name}
+                              <ArrowRight className="h-3 w-3 shrink-0 -translate-x-1 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100" />
+                            </span>
+                            <span className="mt-0.5 block text-[12px] leading-snug text-slate-500 line-clamp-2">
+                              {item.description}
+                            </span>
+                          </span>
+                        </motion.a>
+                      );
+                    })}
+                  </motion.div>
+                ))}
+              </div>
+
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4">
+                <a
+                  href="#/services"
+                  onClick={closeMega}
+                  className="group inline-flex items-center gap-1.5 text-sm font-semibold text-slate-600 transition-colors hover:text-[#C61A1A]"
+                >
+                  <span>View all services</span>
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                </a>
+                <div className="flex items-center gap-4">
+                  <span className="hidden xl:inline text-xs text-slate-400">
+                    Not sure where to start? The audit will tell you.
+                  </span>
+                  <button
+                    onClick={() => {
+                      closeMega();
+                      onOpenAudit();
+                    }}
+                    className="dz-btn-shine rounded-lg bg-[#C61A1A] px-4 py-2 text-[13px] font-semibold text-white transition-colors hover:bg-[#9E1414] cursor-pointer"
+                  >
+                    Get Free Growth Audit
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Mobile drawer */}
       <AnimatePresence initial={false}>
