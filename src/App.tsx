@@ -22,6 +22,7 @@ import { PortfolioPage } from './pages/PortfolioPage';
 import { ServicesPage } from './pages/ServicesPage';
 import { CaseStudiesPage } from './pages/CaseStudiesPage';
 import { CaseStudyPage } from './pages/CaseStudyPage';
+import { RevivalResearchCaseStudyPage } from './pages/RevivalResearchCaseStudyPage';
 import { AdminPage } from './pages/AdminPage';
 import { RefundPolicyPage } from './pages/RefundPolicyPage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
@@ -238,7 +239,11 @@ export default function App() {
             ) : route === 'caseStudies' ? (
               <CaseStudiesPage onOpenAudit={handleOpenAudit} />
             ) : route === 'caseStudy' ? (
-              <CaseStudyPage slug={caseStudySlug} onOpenAudit={handleOpenAudit} />
+              caseStudySlug === 'revival-research' ? (
+                <RevivalResearchCaseStudyPage onOpenAudit={handleOpenAudit} />
+              ) : (
+                <CaseStudyPage slug={caseStudySlug} onOpenAudit={handleOpenAudit} />
+              )
             ) : route === 'refundPolicy' ? (
               <RefundPolicyPage />
             ) : route === 'privacyPolicy' ? (

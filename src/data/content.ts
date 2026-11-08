@@ -7,8 +7,30 @@ import caseStudyHomeServicesImg from '../assets/images/case_study_home_services_
 import caseStudyFitnessGymImg from '../assets/images/case_study_fitness_gym_1793265216970.jpg';
 import caseStudyEcommerceImg from '../assets/images/case_study_ecommerce_1793265216797.jpg';
 import caseStudyHealthcareImg from '../assets/images/case_study_healthcare_1793265216984.jpg';
+import revivalResearchImg from '../assets/images/revival_research.png';
+import {
+  REVIVAL_INDEX_RESULTS,
+  REVIVAL_INDEX_SUMMARY,
+  REVIVAL_MODAL_APPROACH,
+  REVIVAL_MODAL_CHALLENGES,
+} from './revivalCaseStudyContent';
 
 export const CASE_STUDIES: CaseStudy[] = [
+  {
+    /* Full bespoke layout at `#/case-study/revival-research`
+       (RevivalResearchCaseStudyPage) — this entry powers the index card,
+       the homepage carousel, and the modal preview. */
+    id: 'revival-research',
+    category: 'Clinical Research',
+    industry: 'Clinical Research / Healthcare',
+    title:
+      'How We Helped a Clinical Research Organization Scale Patient Recruitment Through Digital Growth',
+    summary: REVIVAL_INDEX_SUMMARY,
+    image: revivalResearchImg,
+    challenges: REVIVAL_MODAL_CHALLENGES,
+    whatWeDid: REVIVAL_MODAL_APPROACH,
+    results: REVIVAL_INDEX_RESULTS,
+  },
   {
     id: 'home-services',
     category: 'Home services',

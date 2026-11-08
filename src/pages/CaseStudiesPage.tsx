@@ -282,7 +282,7 @@ export const CaseStudiesPage: React.FC<CaseStudiesPageProps> = ({ onOpenAudit })
                           </span>
                         </span>
                         <span className="flex items-center gap-2.5 shrink-0">
-                          {s.results.map((r) => (
+                          {s.results.slice(0, 3).map((r) => (
                             <span key={r.label} className="text-sm font-extrabold text-[#C61A1A] tabular-nums leading-none">
                               {r.value}
                             </span>
@@ -409,7 +409,7 @@ export const CaseStudiesPage: React.FC<CaseStudiesPageProps> = ({ onOpenAudit })
 
                       {/* measured results */}
                       <div className="mt-4 grid grid-cols-3 gap-2 sm:gap-4 border-t border-slate-100 pt-3.5">
-                        {study.results.map((r) => (
+                        {study.results.slice(0, 3).map((r) => (
                           <div key={r.label} className="min-w-0">
                             <div className="text-lg sm:text-xl font-extrabold text-[#C61A1A] tabular-nums leading-none">
                               {r.value}

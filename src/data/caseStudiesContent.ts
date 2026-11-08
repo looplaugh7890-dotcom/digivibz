@@ -13,7 +13,7 @@ import { CASE_STUDIES } from './content';
 export const CASE_STUDY_LIBRARY = CASE_STUDIES;
 
 export const CASE_STUDIES_INTRO =
-  'Four industries, four complete breakdowns — what was broken, what we changed, and exactly what the numbers did afterwards. No projections, no vanity metrics: every figure below was measured on the client account.';
+  'Every study here is a complete breakdown — what was broken, what we changed, and exactly what the numbers did afterwards. No projections, no vanity metrics: every figure below was measured on the client account.';
 
 /** Hero floating chips — headline results drawn from the studies themselves. */
 export const HERO_RESULT_CHIPS: { value: string; label: string }[] = [
