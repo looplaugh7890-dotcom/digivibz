@@ -46,11 +46,11 @@ const MenuHeading: React.FC<{ children: React.ReactNode; delay?: number }> = ({
 /**
  * CupsNChai case study (`#/case-study/cups-n-chai`).
  *
- * Identity: a café "menu board" — black chalkboard hero and closing CTA
- * with a dotted-board texture, section headings trailed by dashed menu
- * leaders, the challenge as a numbered ledger with a chalk-line closer,
- * the 5D phases on a red receipt rail (no cards, no ghost words — those
- * belong to Revival), and results as dashed menu rows.
+ * Identity: a café "menu board" — white throughout (house rule for case
+ * study pages) carrying a dotted-board texture, section headings trailed by
+ * dashed menu leaders, the challenge as a numbered ledger with a chalk-line
+ * closer, the 5D phases on a red receipt rail (no cards, no ghost words —
+ * those belong to Revival), and results as dashed menu rows.
  */
 export const CupsNChaiCaseStudyPage: React.FC<CupsNChaiCaseStudyPageProps> = ({
   onOpenAudit,
@@ -64,7 +64,7 @@ export const CupsNChaiCaseStudyPage: React.FC<CupsNChaiCaseStudyPageProps> = ({
   });
 
   const chalkDots = (opacity: number): React.CSSProperties => ({
-    backgroundImage: 'radial-gradient(#ffffff 1.2px, transparent 1.2px)',
+    backgroundImage: 'radial-gradient(#0A0A0A 1.2px, transparent 1.2px)',
     backgroundSize: '24px 24px',
     maskImage: 'radial-gradient(ellipse 75% 60% at 50% 30%, #000 40%, transparent 100%)',
     WebkitMaskImage: 'radial-gradient(ellipse 75% 60% at 50% 30%, #000 40%, transparent 100%)',
@@ -74,15 +74,15 @@ export const CupsNChaiCaseStudyPage: React.FC<CupsNChaiCaseStudyPageProps> = ({
   return (
     <div className="bg-white">
       {/* ==================================================================
-          1. HERO — black chalkboard menu board with the client visual
+          1. HERO — white menu board with the client visual
       =================================================================== */}
-      <section id="cups-hero" className="relative bg-[#0A0A0A] overflow-hidden">
-        <div aria-hidden="true" className="absolute inset-0 pointer-events-none" style={chalkDots(0.16)} />
+      <section id="cups-hero" className="relative bg-white overflow-hidden">
+        <div aria-hidden="true" className="absolute inset-0 pointer-events-none" style={chalkDots(0.2)} />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-12 md:pt-10 md:pb-16">
           <motion.a
             {...rise(0)}
             href="#/case-studies"
-            className="inline-flex items-center gap-2 text-sm font-bold text-slate-400 hover:text-white transition-colors group"
+            className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors group"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             Back to Case Studies
@@ -90,7 +90,7 @@ export const CupsNChaiCaseStudyPage: React.FC<CupsNChaiCaseStudyPageProps> = ({
 
           <div className="mt-8 max-w-4xl mx-auto text-center">
             <motion.div {...rise(0.06)}>
-              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#C61A1A]/15 border border-[#C61A1A]/45 text-xs font-bold text-[#FF6B6B] uppercase tracking-widest">
+              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-50 border border-[#C61A1A]/25 text-xs font-bold text-[#C61A1A] uppercase tracking-widest">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#C61A1A] animate-pulse" />
                 {CUPS.eyebrow}
               </span>
@@ -98,38 +98,38 @@ export const CupsNChaiCaseStudyPage: React.FC<CupsNChaiCaseStudyPageProps> = ({
 
             <motion.h1
               {...rise(0.12)}
-              className="mt-5 text-3xl sm:text-4xl md:text-[44px] font-extrabold text-white tracking-tight leading-[1.14]"
+              className="mt-5 text-3xl sm:text-4xl md:text-[44px] font-extrabold text-slate-900 tracking-tight leading-[1.14]"
             >
-              Building a <span className="text-[#FF6B6B]">Local Brand Presence</span> for a
+              Building a <span className="text-[#C61A1A]">Local Brand Presence</span> for a
               South Asian Chai Café
             </motion.h1>
 
             {/* meta strip — menu-header line, not a box */}
             <motion.div
               {...rise(0.2)}
-              className="mt-7 grid grid-cols-1 sm:grid-cols-3 border-y border-white/10 divide-y sm:divide-y-0 sm:divide-x divide-white/10 text-center"
+              className="mt-7 grid grid-cols-1 sm:grid-cols-3 border-y border-slate-200 divide-y sm:divide-y-0 sm:divide-x divide-slate-200 text-center"
             >
               <div className="px-4 py-4">
-                <div className="text-[10px] font-extrabold uppercase tracking-widest text-[#F87171]">
+                <div className="text-[10px] font-extrabold uppercase tracking-widest text-[#C61A1A]">
                   Industry
                 </div>
-                <div className="mt-1.5 text-sm font-bold text-white">{CUPS.meta.industry}</div>
+                <div className="mt-1.5 text-sm font-bold text-slate-900">{CUPS.meta.industry}</div>
               </div>
               <div className="px-4 py-4">
-                <div className="text-[10px] font-extrabold uppercase tracking-widest text-[#F87171]">
+                <div className="text-[10px] font-extrabold uppercase tracking-widest text-[#C61A1A]">
                   Timeline
                 </div>
-                <div className="mt-1.5 text-sm font-bold text-white">{CUPS.meta.timeline}</div>
+                <div className="mt-1.5 text-sm font-bold text-slate-900">{CUPS.meta.timeline}</div>
               </div>
               <div className="px-4 py-4">
-                <div className="text-[10px] font-extrabold uppercase tracking-widest text-[#F87171]">
+                <div className="text-[10px] font-extrabold uppercase tracking-widest text-[#C61A1A]">
                   Primary Channels
                 </div>
                 <div className="mt-2 flex flex-wrap justify-center gap-1.5">
                   {CUPS.meta.channels.map((c) => (
                     <span
                       key={c}
-                      className="px-2 py-0.5 rounded-md bg-white/5 border border-white/15 text-[11px] font-semibold text-slate-200"
+                      className="px-2 py-0.5 rounded-md bg-white border border-slate-200 text-[11px] font-semibold text-slate-600"
                     >
                       {c}
                     </span>
@@ -139,12 +139,12 @@ export const CupsNChaiCaseStudyPage: React.FC<CupsNChaiCaseStudyPageProps> = ({
             </motion.div>
 
             <motion.div {...rise(0.26)} className="mt-6 max-w-3xl mx-auto">
-              <div className="inline-flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-widest text-[#FF6B6B]">
+              <div className="inline-flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-widest text-[#C61A1A]">
                 <span className="w-6 h-px bg-[#C61A1A]" />
                 {CUPS.meta.objectiveLabel}
                 <span className="w-6 h-px bg-[#C61A1A]" />
               </div>
-              <p className="mt-3 text-sm sm:text-base text-slate-300 leading-relaxed">
+              <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed">
                 {CUPS.meta.objective}
               </p>
             </motion.div>
@@ -157,7 +157,7 @@ export const CupsNChaiCaseStudyPage: React.FC<CupsNChaiCaseStudyPageProps> = ({
             transition={{ duration: 0.8, delay: 0.24, ease: [0.22, 1, 0.36, 1] }}
             className="mt-9 max-w-4xl mx-auto m-0"
           >
-            <div className="relative rounded-2xl overflow-hidden border border-white/15 shadow-[0_30px_70px_-30px_rgba(0,0,0,0.8)]">
+            <div className="relative rounded-2xl overflow-hidden border border-slate-200 shadow-[0_30px_70px_-30px_rgba(0,0,0,0.45)]">
               <img
                 src={CUPS_IMAGE}
                 alt="CupsNChai South Asian chai café website, mobile pages, and brand collateral"
@@ -363,36 +363,36 @@ export const CupsNChaiCaseStudyPage: React.FC<CupsNChaiCaseStudyPageProps> = ({
       </section>
 
       {/* ==================================================================
-          7. CTA — chalkboard close, echoing the hero
+          7. CTA — dotted white close, echoing the hero
       =================================================================== */}
-      <section className="relative py-14 md:py-16 bg-[#0A0A0A] overflow-hidden">
-        <div aria-hidden="true" className="absolute inset-0 pointer-events-none" style={chalkDots(0.1)} />
+      <section className="relative py-14 md:py-16 bg-white overflow-hidden border-t border-slate-100">
+        <div aria-hidden="true" className="absolute inset-0 pointer-events-none" style={chalkDots(0.14)} />
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Reveal>
-            <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/20 text-xs font-bold uppercase tracking-widest text-[#FF6B6B]">
+            <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-50 border border-[#C61A1A]/25 text-xs font-bold uppercase tracking-widest text-[#C61A1A]">
               <Coffee className="w-3.5 h-3.5" />
               Start Your Case Study
             </span>
           </Reveal>
           <Reveal delay={0.06}>
-            <h2 className="mt-5 text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight">
+            <h2 className="mt-5 text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
               {CUPS_CTA.title}
             </h2>
           </Reveal>
           <Reveal delay={0.1}>
-            <p className="mt-4 text-sm sm:text-base text-slate-300 leading-relaxed">{CUPS_CTA.body}</p>
+            <p className="mt-4 text-sm sm:text-base text-slate-600 leading-relaxed">{CUPS_CTA.body}</p>
           </Reveal>
           <Reveal delay={0.16} className="mt-7 flex flex-col sm:flex-row items-center justify-center gap-3">
             <button
               onClick={onOpenAudit}
-              className="dz-btn-shine inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-white hover:bg-slate-100 text-[#C61A1A] font-bold text-sm sm:text-base rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all group cursor-pointer"
+              className="dz-btn-shine inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[#C61A1A] hover:bg-[#9E1414] text-white font-bold text-sm sm:text-base rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all group cursor-pointer"
             >
               <span>{CUPS_CTA.button}</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
             <a
               href="#/case-studies"
-              className="inline-flex items-center justify-center gap-2 px-7 py-3.5 border border-white/40 hover:bg-white/10 text-white font-semibold text-sm sm:text-base rounded-xl transition-all"
+              className="inline-flex items-center justify-center gap-2 px-7 py-3.5 border border-slate-300 hover:bg-slate-100 text-slate-700 font-semibold text-sm sm:text-base rounded-xl transition-all"
             >
               View More Case Studies
               <ArrowRight className="w-4 h-4" />
