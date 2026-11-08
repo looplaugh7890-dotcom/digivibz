@@ -8,12 +8,19 @@ import caseStudyFitnessGymImg from '../assets/images/case_study_fitness_gym_1793
 import caseStudyEcommerceImg from '../assets/images/case_study_ecommerce_1793265216797.jpg';
 import caseStudyHealthcareImg from '../assets/images/case_study_healthcare_1793265216984.jpg';
 import revivalResearchImg from '../assets/images/revival_research.png';
+import cupsnchaiImg from '../assets/images/cupsnchai.jpg';
 import {
   REVIVAL_INDEX_RESULTS,
   REVIVAL_INDEX_SUMMARY,
   REVIVAL_MODAL_APPROACH,
   REVIVAL_MODAL_CHALLENGES,
 } from './revivalCaseStudyContent';
+import {
+  CUPS_INDEX_RESULTS,
+  CUPS_INDEX_SUMMARY,
+  CUPS_MODAL_APPROACH,
+  CUPS_MODAL_CHALLENGES,
+} from './cupsnchaiCaseStudyContent';
 
 export const CASE_STUDIES: CaseStudy[] = [
   {
@@ -30,6 +37,20 @@ export const CASE_STUDIES: CaseStudy[] = [
     challenges: REVIVAL_MODAL_CHALLENGES,
     whatWeDid: REVIVAL_MODAL_APPROACH,
     results: REVIVAL_INDEX_RESULTS,
+  },
+  {
+    /* Full bespoke layout at `#/case-study/cups-n-chai`
+       (CupsNChaiCaseStudyPage) — powers the index card, homepage
+       carousel, and modal preview. */
+    id: 'cups-n-chai',
+    category: 'South Asian Café',
+    industry: 'Restaurant / Food & Beverage (South Asian Café)',
+    title: 'Building a Local Brand Presence for a South Asian Chai Café',
+    summary: CUPS_INDEX_SUMMARY,
+    image: cupsnchaiImg,
+    challenges: CUPS_MODAL_CHALLENGES,
+    whatWeDid: CUPS_MODAL_APPROACH,
+    results: CUPS_INDEX_RESULTS,
   },
   {
     id: 'home-services',
