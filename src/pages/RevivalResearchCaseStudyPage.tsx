@@ -32,10 +32,11 @@ interface RevivalResearchCaseStudyPageProps {
 /**
  * Revival Research case study (`#/case-study/revival-research`).
  *
- * Identity: a black editorial dossier — the site's only dark case-study
- * layout. The client's own visual anchors the hero, the challenge reads as
- * a red-marked defect list, and the 5D phases are oversized "file sheets"
- * with ghost phase words (no arrows, no orbit — those belong elsewhere).
+ * Identity: a white editorial dossier header on a square-grid mask — the
+ * client's own visual anchors the hero, the challenge reads as a red-marked
+ * defect list, the 5D phases are oversized "file sheets" with ghost phase
+ * words (no arrows, no orbit — those belong elsewhere), and the results
+ * band drops to black for contrast.
  */
 export const RevivalResearchCaseStudyPage: React.FC<RevivalResearchCaseStudyPageProps> = ({
   onOpenAudit,
@@ -51,14 +52,14 @@ export const RevivalResearchCaseStudyPage: React.FC<RevivalResearchCaseStudyPage
   return (
     <div className="bg-white">
       {/* ==================================================================
-          1. HERO — black dossier header with the client visual
+          1. HERO — white dossier header, square-grid mask, client visual
       =================================================================== */}
-      <section id="revival-hero" className="relative bg-[#0A0A0A] overflow-hidden">
+      <section id="revival-hero" className="relative bg-white overflow-hidden">
         <div
-          className="absolute inset-0 opacity-[0.10] pointer-events-none"
+          className="absolute inset-0 opacity-[0.14] pointer-events-none"
           style={{
             backgroundImage:
-              'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)',
+              'linear-gradient(to right, #0A0A0A 1px, transparent 1px), linear-gradient(to bottom, #0A0A0A 1px, transparent 1px)',
             backgroundSize: '3.5rem 3.5rem',
             maskImage: 'radial-gradient(ellipse 80% 60% at 50% 30%, #000 60%, transparent 100%)',
             WebkitMaskImage: 'radial-gradient(ellipse 80% 60% at 50% 30%, #000 60%, transparent 100%)',
@@ -68,14 +69,14 @@ export const RevivalResearchCaseStudyPage: React.FC<RevivalResearchCaseStudyPage
           <motion.a
             {...rise(0)}
             href="#/case-studies"
-            className="inline-flex items-center gap-2 text-sm font-bold text-slate-400 hover:text-white transition-colors group"
+            className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors group"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             Back to Case Studies
           </motion.a>
 
           <motion.div {...rise(0.06)} className="mt-7">
-            <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/15 text-xs font-bold text-[#F87171] uppercase tracking-widest">
+            <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-50 border border-[#C61A1A]/25 text-xs font-bold text-[#C61A1A] uppercase tracking-widest">
               <span className="w-1.5 h-1.5 rounded-full bg-[#C61A1A] animate-pulse" />
               {REVIVAL.eyebrow}
             </span>
@@ -83,24 +84,24 @@ export const RevivalResearchCaseStudyPage: React.FC<RevivalResearchCaseStudyPage
 
           <motion.h1
             {...rise(0.12)}
-            className="mt-5 max-w-5xl text-3xl sm:text-4xl md:text-[44px] font-extrabold text-white tracking-tight leading-[1.14]"
+            className="mt-5 max-w-5xl text-3xl sm:text-4xl md:text-[44px] font-extrabold text-slate-900 tracking-tight leading-[1.14]"
           >
             How We Helped a Clinical Research Organization{' '}
-            <span className="text-[#FF6B6B]">Scale Patient Recruitment</span> Through Digital Growth
+            <span className="text-[#C61A1A]">Scale Patient Recruitment</span> Through Digital Growth
           </motion.h1>
 
           {/* meta bar */}
           <motion.div
             {...rise(0.2)}
-            className="mt-7 grid grid-cols-1 sm:grid-cols-3 rounded-2xl border border-white/10 bg-white/[0.04] divide-y sm:divide-y-0 sm:divide-x divide-white/10 overflow-hidden"
+            className="mt-7 grid grid-cols-1 sm:grid-cols-3 rounded-2xl border border-slate-200 bg-slate-50/80 divide-y sm:divide-y-0 sm:divide-x divide-slate-200 overflow-hidden"
           >
             <div className="px-5 py-4">
               <div className="text-[10px] font-extrabold uppercase tracking-widest text-slate-500">Industry</div>
-              <div className="mt-1.5 text-sm font-bold text-white">{REVIVAL.meta.industry}</div>
+              <div className="mt-1.5 text-sm font-bold text-slate-900">{REVIVAL.meta.industry}</div>
             </div>
             <div className="px-5 py-4">
               <div className="text-[10px] font-extrabold uppercase tracking-widest text-slate-500">Timeline</div>
-              <div className="mt-1.5 text-sm font-bold text-white">{REVIVAL.meta.timeline}</div>
+              <div className="mt-1.5 text-sm font-bold text-slate-900">{REVIVAL.meta.timeline}</div>
             </div>
             <div className="px-5 py-4">
               <div className="text-[10px] font-extrabold uppercase tracking-widest text-slate-500">
@@ -110,7 +111,7 @@ export const RevivalResearchCaseStudyPage: React.FC<RevivalResearchCaseStudyPage
                 {REVIVAL.meta.channels.map((c) => (
                   <span
                     key={c}
-                    className="px-2 py-0.5 rounded-md bg-white/10 border border-white/10 text-[11px] font-semibold text-slate-200"
+                    className="px-2 py-0.5 rounded-md bg-white border border-slate-200 text-[11px] font-semibold text-slate-600"
                   >
                     {c}
                   </span>
@@ -122,11 +123,11 @@ export const RevivalResearchCaseStudyPage: React.FC<RevivalResearchCaseStudyPage
           {/* objective + client visual */}
           <div className="mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
             <motion.div {...rise(0.28)} className="lg:col-span-5 space-y-3">
-              <div className="inline-flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-widest text-[#FF6B6B]">
+              <div className="inline-flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-widest text-[#C61A1A]">
                 <span className="w-6 h-px bg-[#C61A1A]" />
                 {REVIVAL.meta.objectiveLabel}
               </div>
-              <p className="text-sm sm:text-base text-slate-300 leading-relaxed">{REVIVAL.meta.objective}</p>
+              <p className="text-sm sm:text-base text-slate-600 leading-relaxed">{REVIVAL.meta.objective}</p>
             </motion.div>
 
             <motion.figure
@@ -135,7 +136,7 @@ export const RevivalResearchCaseStudyPage: React.FC<RevivalResearchCaseStudyPage
               transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
               className="lg:col-span-7 m-0"
             >
-              <div className="relative rounded-2xl overflow-hidden border border-white/15 shadow-[0_30px_70px_-30px_rgba(0,0,0,0.8)]">
+              <div className="relative rounded-2xl overflow-hidden border border-slate-200 shadow-[0_30px_70px_-30px_rgba(0,0,0,0.45)]">
                 <img
                   src={REVIVAL_IMAGE}
                   alt="Revival Research clinical trial website and patient recruitment campaign creatives"
