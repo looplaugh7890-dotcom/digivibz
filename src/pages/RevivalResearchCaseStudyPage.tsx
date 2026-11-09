@@ -30,7 +30,7 @@ interface RevivalResearchCaseStudyPageProps {
 }
 
 /**
- * Revival Research case study (`#/case-study/revival-research`).
+ * Revival Research case study (`/case-study/revival-research`).
  *
  * Identity: a white editorial dossier header on a square-grid mask — the
  * client's own visual anchors the hero, the challenge reads as a red-marked
@@ -68,7 +68,7 @@ export const RevivalResearchCaseStudyPage: React.FC<RevivalResearchCaseStudyPage
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-12 md:pt-10 md:pb-16">
           <motion.a
             {...rise(0)}
-            href="#/case-studies"
+            href="/case-studies"
             className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors group"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
@@ -143,7 +143,7 @@ export const RevivalResearchCaseStudyPage: React.FC<RevivalResearchCaseStudyPage
                   referrerPolicy="no-referrer"
                   className="w-full h-auto block"
                 />
-                <figcaption className="absolute left-3 bottom-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/70 backdrop-blur-sm border border-white/15 text-[10px] font-extrabold uppercase tracking-widest text-white">
+                <figcaption className="absolute left-3 bottom-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/95 backdrop-blur-sm border border-slate-200 text-[10px] font-extrabold uppercase tracking-widest text-slate-700 shadow-xs">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#C61A1A]" />
                   {REVIVAL.meta.industry}
                 </figcaption>
@@ -265,14 +265,15 @@ export const RevivalResearchCaseStudyPage: React.FC<RevivalResearchCaseStudyPage
       </section>
 
       {/* ==================================================================
-          4. RESULTS — six measured numbers on black
+          4. RESULTS — six measured numbers on white (house rule: no black
+          on case study pages; the grid pattern stays, now dark-on-white)
       =================================================================== */}
-      <section id="revival-results" className="py-14 md:py-16 bg-[#0A0A0A] relative overflow-hidden">
+      <section id="revival-results" className="py-14 md:py-16 bg-white border-y border-slate-100 relative overflow-hidden">
         <div
-          className="absolute inset-0 opacity-[0.08] pointer-events-none"
+          className="absolute inset-0 opacity-[0.10] pointer-events-none"
           style={{
             backgroundImage:
-              'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)',
+              'linear-gradient(to right, #0A0A0A 1px, transparent 1px), linear-gradient(to bottom, #0A0A0A 1px, transparent 1px)',
             backgroundSize: '3rem 3rem',
             maskImage: 'radial-gradient(ellipse 70% 70% at 50% 50%, #000 40%, transparent 100%)',
             WebkitMaskImage: 'radial-gradient(ellipse 70% 70% at 50% 50%, #000 40%, transparent 100%)',
@@ -282,10 +283,10 @@ export const RevivalResearchCaseStudyPage: React.FC<RevivalResearchCaseStudyPage
           <div className="flex flex-wrap items-end justify-between gap-4">
             <Reveal>
               <div>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-xs font-semibold uppercase tracking-wider text-[#FF6B6B]">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-50 border border-red-100 text-xs font-semibold uppercase tracking-wider text-[#C61A1A]">
                   <Award className="w-3.5 h-3.5" /> 8 Months · Measured
                 </div>
-                <h2 className="mt-4 text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                <h2 className="mt-4 text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
                   {REVIVAL_RESULTS_HEADING}
                 </h2>
               </div>
@@ -302,16 +303,16 @@ export const RevivalResearchCaseStudyPage: React.FC<RevivalResearchCaseStudyPage
               const Icon = r.icon;
               return (
                 <Reveal key={r.value + r.label} delay={(i % 3) * 0.07}>
-                  <div className="group h-full rounded-2xl border border-white/10 bg-white/[0.04] p-5 hover:border-[#C61A1A]/60 hover:bg-white/[0.06] transition-colors">
+                  <div className="group h-full rounded-2xl border border-slate-200 bg-white p-5 hover:border-[#C61A1A]/60 hover:bg-red-50/40 transition-colors shadow-xs">
                     <div className="flex items-start justify-between gap-3">
-                      <span className="text-3xl sm:text-4xl font-extrabold text-[#FF6B6B] tabular-nums leading-none">
+                      <span className="text-3xl sm:text-4xl font-extrabold text-[#C61A1A] tabular-nums leading-none">
                         {r.value}
                       </span>
-                      <span className="flex w-9 h-9 items-center justify-center rounded-lg bg-white/5 border border-white/10 text-slate-400 group-hover:text-[#FF6B6B] group-hover:border-[#C61A1A]/50 transition-colors">
+                      <span className="flex w-9 h-9 items-center justify-center rounded-lg bg-slate-50 border border-slate-200 text-slate-500 group-hover:text-[#C61A1A] group-hover:border-[#C61A1A]/50 transition-colors">
                         <Icon className="w-4 h-4" />
                       </span>
                     </div>
-                    <p className="mt-3 text-sm text-slate-300 leading-snug">{r.label}</p>
+                    <p className="mt-3 text-sm text-slate-600 leading-snug">{r.label}</p>
                   </div>
                 </Reveal>
               );
@@ -405,7 +406,7 @@ export const RevivalResearchCaseStudyPage: React.FC<RevivalResearchCaseStudyPage
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
             <a
-              href="#/case-studies"
+              href="/case-studies"
               className="inline-flex items-center justify-center gap-2 px-7 py-3.5 border border-white/50 hover:bg-white/10 text-white font-semibold text-sm sm:text-base rounded-xl transition-all"
             >
               View More Case Studies

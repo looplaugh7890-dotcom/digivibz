@@ -18,7 +18,7 @@ import {
 import type { LucideIcon } from 'lucide-react';
 
 /**
- * Copy + structure for the Refund & Return Policy page (`#/refund-policy`).
+ * Copy + structure for the Refund & Return Policy page (`/refund-policy`).
  * Every statement here mirrors the client-provided policy text verbatim;
  * the page only decides how each block is presented.
  */

@@ -1,5 +1,5 @@
 /**
- * Copy for the App Development service page (`#/service/application-development`).
+ * Copy for the App Development service page (`/service/application-development`).
  *
  * Client-provided text, kept verbatim. Only mechanical fixes were applied:
  * - "Digivibs" -> "Digivibz" (brand-name typo, where present)

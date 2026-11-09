@@ -1,5 +1,5 @@
 /**
- * Copy for the Social Media Marketing service page (`#/service/social-media-marketing`).
+ * Copy for the Social Media Marketing service page (`/service/social-media-marketing`).
  *
  * Client-provided text, kept verbatim. Only mechanical fixes were applied:
  * - "Digivibs" -> "Digivibz" (brand-name typo)

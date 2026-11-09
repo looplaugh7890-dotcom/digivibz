@@ -46,7 +46,7 @@ import {
 import type { TermsSectionMeta } from '../data/termsContent';
 
 /**
- * Terms & Conditions page (`#/terms`).
+ * Terms & Conditions page (`/terms`).
  *
  * Same document architecture as the Refund & Privacy pages — hero figure
  * strip, an ownership-flow diagram, sticky TOC with scrollspy, numbered
@@ -521,7 +521,7 @@ const SectionBody: React.FC<{ id: string }> = ({ id }) => {
           </Prose>
           <Reveal delay={0.05}>
             <a
-              href="#/refund-policy"
+              href="/refund-policy"
               className="mt-4 inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-4 py-2 text-[11px] font-extrabold uppercase tracking-widest text-[#C61A1A] hover:bg-[#C61A1A] hover:text-white hover:border-[#C61A1A] transition-colors"
             >
               Full Refund Policy
@@ -605,7 +605,7 @@ const SectionBody: React.FC<{ id: string }> = ({ id }) => {
               </a>{' '}
               {TERMS_CONTACT_AFTER}{' '}
               <a
-                href="#/contact"
+                href="/contact"
                 className="font-bold text-[#C61A1A] hover:underline underline-offset-2"
               >
                 {TERMS_CONTACT_FORM_LABEL}
@@ -635,7 +635,7 @@ const SectionBody: React.FC<{ id: string }> = ({ id }) => {
             </Reveal>
             <Reveal delay={0.1}>
               <a
-                href="#/contact"
+                href="/contact"
                 className="group flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 hover:border-red-200 hover:shadow-[0_18px_40px_-32px_rgba(198,26,26,0.45)] transition-all h-full"
               >
                 <span className="shrink-0 w-11 h-11 rounded-xl bg-red-50 text-[#C61A1A] flex items-center justify-center border border-red-100">

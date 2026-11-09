@@ -1,5 +1,5 @@
 /**
- * Copy for the Google My Business service page (`#/service/google-my-business`).
+ * Copy for the Google My Business service page (`/service/google-my-business`).
  *
  * Client-provided text, kept verbatim. Only mechanical fixes were applied:
  * - list numbering stripped from services 3-7 ("3. Google Business Profile

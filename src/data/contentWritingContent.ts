@@ -1,5 +1,5 @@
 /**
- * Copy for the Content Writing service page (`#/service/content-writing`).
+ * Copy for the Content Writing service page (`/service/content-writing`).
  *
  * Client-provided text, kept verbatim. Only mechanical fixes were applied:
  * - stray space before commas normalized ("our words,no" -> "our words, no")

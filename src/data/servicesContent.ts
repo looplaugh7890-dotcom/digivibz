@@ -18,10 +18,10 @@ import {
 import type { LucideIcon } from 'lucide-react';
 
 /**
- * Copy + data for the Services page (`#/services`).
+ * Copy + data for the Services page (`/services`).
  *
  * NOTE: every entry carries a `slug` — the future detail pages will live at
- * `#/service/<slug>`. Those pages are built in a later pass; for now the
+ * `/service/<slug>`. Those pages are built in a later pass; for now the
  * cards are presentational and the slugs keep the URLs ready.
  */
 
@@ -40,7 +40,7 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
 ];
 
 export interface Service {
-  /** Future service page: `#/service/<slug>` */
+  /** Future service page: `/service/<slug>` */
   slug: string;
   name: string;
   category: ServiceCategoryId;
@@ -158,7 +158,7 @@ export const SERVICES: Service[] = [
 ];
 
 /**
- * Slugs that already have a dedicated detail page at `#/service/<slug>`.
+ * Slugs that already have a dedicated detail page at `/service/<slug>`.
  * Cards for these become links; the rest stay presentational until built.
  */
 export const SERVICE_DETAIL_SLUGS: string[] = [

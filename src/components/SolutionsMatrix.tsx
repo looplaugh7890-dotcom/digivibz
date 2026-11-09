@@ -76,7 +76,7 @@ export const SolutionsMatrix: React.FC<SolutionsMatrixProps> = ({ onOpenAudit })
             </p>
 
             <a
-              href="#/services"
+              href="/services"
               className="inline-flex items-center gap-2 text-sm font-bold text-slate-800 hover:text-[#C61A1A] transition-colors group pt-1"
             >
               Browse all 15 services

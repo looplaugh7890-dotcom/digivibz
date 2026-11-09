@@ -63,7 +63,7 @@ const HERO_STATS = [
 const CALL_WAVE = [45, 80, 55, 100, 65, 90, 50, 75, 40];
 
 /**
- * Contact page (`#/contact`) — client brief: hero → audit form → what
+ * Contact page (`/contact`) — client brief: hero → audit form → what
  * happens next → why choose us → ways to connect → closing CTA.
  * Red/white/black only; every visual is a chart, funnel-style timeline,
  * or dashboard panel (no decorative AI-style art).
@@ -74,7 +74,7 @@ export const ContactPage: React.FC = () => {
   /**
    * Scroll to a section WITHOUT changing the hash — a raw `#audit-form`
    * hash change would make App's router unmount this page (it only knows
-   * `#/contact` and home anchors).
+   * `/contact` and home anchors).
    */
   const scrollToSection = (id: string) => (e: React.MouseEvent) => {
     e.preventDefault();

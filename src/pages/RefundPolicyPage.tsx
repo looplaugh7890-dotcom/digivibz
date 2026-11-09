@@ -53,7 +53,7 @@ const TIMELINE = [
 ] as const;
 
 /**
- * Refund & Return Policy page (`#/refund-policy`).
+ * Refund & Return Policy page (`/refund-policy`).
  *
  * Long-form legal content made scannable: a sticky table of contents with
  * scrollspy, a hero figure strip, a visual refund-tier chart, a numbered

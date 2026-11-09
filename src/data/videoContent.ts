@@ -1,5 +1,5 @@
 /**
- * Copy for the Video Editing service page (`#/service/video-editing`).
+ * Copy for the Video Editing service page (`/service/video-editing`).
  *
  * Client-provided text, kept verbatim. Only mechanical fixes were applied:
  * - straight apostrophes -> typographic (’) to match site typography

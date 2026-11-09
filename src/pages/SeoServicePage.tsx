@@ -583,7 +583,7 @@ const FinalCtaSection: React.FC<{ onOpenAudit: () => void }> = ({ onOpenAudit })
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
             <a
-              href="#/contact"
+              href="/contact"
               className="group inline-flex items-center gap-2 px-7 py-4 rounded-xl border border-white/70 text-white hover:bg-white/10 text-sm font-extrabold transition-colors cursor-pointer"
             >
               Talk to our team

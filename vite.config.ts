@@ -5,10 +5,12 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
-    // Relative base → assets resolve correctly wherever the site is served
-    // from (domain root, subfolder, or Hostinger add-on domain path).
-    // Hash-based routing keeps the document path stable, so './' is safe.
-    base: './',
+    // Absolute base — the app uses clean pathname routes (/about,
+    // /case-study/<slug>), so a relative './' base would resolve assets
+    // against the CURRENT path on a hard refresh (e.g. /case-study/x →
+    // /case-study/assets/… 404). '/' assumes the domain root, which is
+    // where this deploys on Hostinger (rewrites in public/.htaccess).
+    base: '/',
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {

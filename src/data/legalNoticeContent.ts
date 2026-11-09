@@ -18,7 +18,7 @@ import {
 import type { LucideIcon } from 'lucide-react';
 
 /**
- * Copy + structure for the Legal Notice page (`#/legal-notice`).
+ * Copy + structure for the Legal Notice page (`/legal-notice`).
  * Every statement here mirrors the client-provided legal notice text
  * verbatim; the page only decides how each block is presented.
  */
@@ -126,10 +126,10 @@ export const RELATED_COPY =
 
 /** Cross-links shown as chips in section 08 and as nodes in the governance map. */
 export const POLICY_LINKS = [
-  { label: 'Privacy Policy', href: '#/privacy-policy', icon: Lock },
-  { label: 'Terms and Conditions', href: '#/terms', icon: Handshake },
-  { label: 'Refund and Return Policy', href: '#/refund-policy', icon: HandCoins },
-  { label: 'Marketing Results Disclaimer', href: '#/marketing-disclaimer', icon: Ban },
+  { label: 'Privacy Policy', href: '/privacy-policy', icon: Lock },
+  { label: 'Terms and Conditions', href: '/terms', icon: Handshake },
+  { label: 'Refund and Return Policy', href: '/refund-policy', icon: HandCoins },
+  { label: 'Marketing Results Disclaimer', href: '/marketing-disclaimer', icon: Ban },
 ] as const;
 
 /* ------------------------------------------------------------------ 09 */

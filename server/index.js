@@ -132,6 +132,12 @@ app.post('/api/contact', async (req, res) => {
 /* ------------------------------------------------------------------ */
 
 app.post('/api/admin/login', (req, res) => {
+  // Same per-IP bucket as the contact form, tighter ceiling — brute-forcing
+  // the admin password from one network exhausts it after a few tries.
+  const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip || 'unknown';
+  if (rateLimited(ip)) {
+    return res.status(429).json({ ok: false, error: 'Too many attempts. Please try again later.' });
+  }
   const { password } = req.body || {};
   if (typeof password !== 'string' || !verifyPassword(password)) {
     return res.status(401).json({ ok: false, error: 'Incorrect password.' });

@@ -17,7 +17,7 @@ import {
 import type { LucideIcon } from 'lucide-react';
 
 /**
- * Copy + structure for the Terms & Conditions page (`#/terms`).
+ * Copy + structure for the Terms & Conditions page (`/terms`).
  * Every statement here mirrors the client-provided terms text verbatim;
  * the page only decides how each block is presented.
  */

@@ -14,7 +14,7 @@ import type { LucideIcon } from 'lucide-react';
 
 /**
  * Copy + structure for the Marketing Results Disclaimer page
- * (`#/marketing-disclaimer`). Every statement here mirrors the
+ * (`/marketing-disclaimer`). Every statement here mirrors the
  * client-provided disclaimer text verbatim; the page only decides how each
  * block is presented.
  */

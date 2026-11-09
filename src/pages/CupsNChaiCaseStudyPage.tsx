@@ -44,7 +44,7 @@ const MenuHeading: React.FC<{ children: React.ReactNode; delay?: number }> = ({
 );
 
 /**
- * CupsNChai case study (`#/case-study/cups-n-chai`).
+ * CupsNChai case study (`/case-study/cups-n-chai`).
  *
  * Identity: a café "menu board" — white throughout (house rule for case
  * study pages) carrying a dotted-board texture, section headings trailed by
@@ -81,7 +81,7 @@ export const CupsNChaiCaseStudyPage: React.FC<CupsNChaiCaseStudyPageProps> = ({
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-12 md:pt-10 md:pb-16">
           <motion.a
             {...rise(0)}
-            href="#/case-studies"
+            href="/case-studies"
             className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors group"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
@@ -164,7 +164,7 @@ export const CupsNChaiCaseStudyPage: React.FC<CupsNChaiCaseStudyPageProps> = ({
                 referrerPolicy="no-referrer"
                 className="w-full h-auto block"
               />
-              <figcaption className="absolute left-3 bottom-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/70 backdrop-blur-sm border border-white/15 text-[10px] font-extrabold uppercase tracking-widest text-white">
+              <figcaption className="absolute left-3 bottom-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/95 backdrop-blur-sm border border-slate-200 text-[10px] font-extrabold uppercase tracking-widest text-slate-700 shadow-xs">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#C61A1A]" />
                 {CUPS.meta.industry}
               </figcaption>
@@ -224,9 +224,9 @@ export const CupsNChaiCaseStudyPage: React.FC<CupsNChaiCaseStudyPageProps> = ({
           </div>
 
           <Reveal delay={0.1} className="mt-7">
-            <div className="relative rounded-2xl bg-[#0A0A0A] px-6 py-5 sm:px-8 sm:py-6 overflow-hidden">
+            <div className="relative rounded-2xl bg-white border border-slate-200 px-6 py-5 sm:px-8 sm:py-6 overflow-hidden shadow-xs">
               <span aria-hidden="true" className="absolute left-0 top-0 bottom-0 w-1 bg-[#C61A1A]" />
-              <p className="relative text-sm sm:text-base font-semibold text-white leading-relaxed">
+              <p className="relative text-sm sm:text-base font-semibold text-slate-800 leading-relaxed">
                 {CUPS_CHALLENGE.closing}
               </p>
             </div>
@@ -391,7 +391,7 @@ export const CupsNChaiCaseStudyPage: React.FC<CupsNChaiCaseStudyPageProps> = ({
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
             <a
-              href="#/case-studies"
+              href="/case-studies"
               className="inline-flex items-center justify-center gap-2 px-7 py-3.5 border border-slate-300 hover:bg-slate-100 text-slate-700 font-semibold text-sm sm:text-base rounded-xl transition-all"
             >
               View More Case Studies

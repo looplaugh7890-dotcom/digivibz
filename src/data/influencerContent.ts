@@ -1,5 +1,5 @@
 /**
- * Copy for the Influencer Marketing service page (`#/service/influencer-marketing`).
+ * Copy for the Influencer Marketing service page (`/service/influencer-marketing`).
  *
  * Client-provided text, kept verbatim. Only mechanical fixes were applied:
  * - straight apostrophes -> typographic (’) to match site typography

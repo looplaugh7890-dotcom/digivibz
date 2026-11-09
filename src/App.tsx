@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { MotionConfig } from 'motion/react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
@@ -24,6 +24,17 @@ import { CaseStudiesPage } from './pages/CaseStudiesPage';
 import { CaseStudyPage } from './pages/CaseStudyPage';
 import { CupsNChaiCaseStudyPage } from './pages/CupsNChaiCaseStudyPage';
 import { RevivalResearchCaseStudyPage } from './pages/RevivalResearchCaseStudyPage';
+import { SchaeferLyndonCaseStudyPage } from './pages/SchaeferLyndonCaseStudyPage';
+import { AllAboutConcreteCaseStudyPage } from './pages/AllAboutConcreteCaseStudyPage';
+import { RoofClaimCaseStudyPage } from './pages/RoofClaimCaseStudyPage';
+import { LungNSleepCaseStudyPage } from './pages/LungNSleepCaseStudyPage';
+import { PlumbexCaseStudyPage } from './pages/PlumbexCaseStudyPage';
+import { BrightSparkCaseStudyPage } from './pages/BrightSparkCaseStudyPage';
+import { BkIndustrialCaseStudyPage } from './pages/BkIndustrialCaseStudyPage';
+import { UavCoachCaseStudyPage } from './pages/UavCoachCaseStudyPage';
+import { LumiereCaseStudyPage } from './pages/LumiereCaseStudyPage';
+import { KeyGuardCaseStudyPage } from './pages/KeyGuardCaseStudyPage';
+import { RapidRestoreCaseStudyPage } from './pages/RapidRestoreCaseStudyPage';
 import { AdminPage } from './pages/AdminPage';
 import { RefundPolicyPage } from './pages/RefundPolicyPage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
@@ -52,57 +63,56 @@ import { GoogleAdsServicePage } from './pages/GoogleAdsServicePage';
 import { SeoServicePage } from './pages/SeoServicePage';
 import { AiSeoServicePage } from './pages/AiSeoServicePage';
 import { CaseStudy } from './types';
+import { ROUTE_EVENT, navigate, readLocation, type AppLocation } from './router';
+import { applySeo } from './seo';
 
 type Route = 'home' | 'about' | 'contact' | 'portfolio' | 'services' | 'service' | 'caseStudies' | 'caseStudy' | 'admin' | 'refundPolicy' | 'privacyPolicy' | 'terms' | 'disclaimer' | 'legalNotice';
 
-/** Hash routes (vs. home-page anchors like `#services`). */
-const routeFromHash = (hash: string): Route =>
-  hash === '#/about' || hash.startsWith('#/about?')
+/** Clean-path routes (vs. in-page anchors like `#faqs`). */
+const routeFromPath = (path: string): Route =>
+  path === '/about'
     ? 'about'
-    : hash === '#/contact' || hash.startsWith('#/contact?')
+    : path === '/contact'
       ? 'contact'
-      : hash === '#/portfolio' || hash.startsWith('#/portfolio?')
+      : path === '/portfolio'
         ? 'portfolio'
-        : hash === '#/services' || hash.startsWith('#/services?')
+        : path === '/services'
           ? 'services'
-          : hash.startsWith('#/service/')
+          : path.startsWith('/service/')
             ? 'service'
-            : hash === '#/case-studies' || hash.startsWith('#/case-studies?')
+            : path === '/case-studies'
               ? 'caseStudies'
-            : hash.startsWith('#/case-study/')
-              ? 'caseStudy'
-            : hash === '#/admin' || hash.startsWith('#/admin?')
-              ? 'admin'
-              : hash === '#/refund-policy' || hash.startsWith('#/refund-policy?')
-                ? 'refundPolicy'
-                : hash === '#/privacy-policy' || hash.startsWith('#/privacy-policy?')
-                  ? 'privacyPolicy'
-                  : hash === '#/terms' || hash.startsWith('#/terms?')
-                    ? 'terms'
-                    : hash === '#/marketing-disclaimer' || hash.startsWith('#/marketing-disclaimer?')
-                      ? 'disclaimer'
-                      : hash === '#/legal-notice' || hash.startsWith('#/legal-notice?')
-                        ? 'legalNotice'
-                        : 'home';
+              : path.startsWith('/case-study/')
+                ? 'caseStudy'
+                : path === '/admin'
+                  ? 'admin'
+                  : path === '/refund-policy'
+                    ? 'refundPolicy'
+                    : path === '/privacy-policy'
+                      ? 'privacyPolicy'
+                      : path === '/terms'
+                        ? 'terms'
+                        : path === '/marketing-disclaimer'
+                          ? 'disclaimer'
+                          : path === '/legal-notice'
+                            ? 'legalNotice'
+                            : 'home';
 
-/** Slug after `#/case-study/` (empty string when absent). */
-const caseStudySlugFromHash = (hash: string): string =>
-  hash.startsWith('#/case-study/') ? hash.slice('#/case-study/'.length).split('?')[0] : '';
+/** Slug after `/case-study/` (empty string when absent). */
+const caseStudySlugFromPath = (path: string): string =>
+  path.startsWith('/case-study/') ? path.slice('/case-study/'.length) : '';
 
-/** Slug after `#/service/` (empty string when absent). */
-const serviceSlugFromHash = (hash: string): string =>
-  hash.startsWith('#/service/') ? hash.slice('#/service/'.length).split('?')[0] : '';
+/** Slug after `/service/` (empty string when absent). */
+const serviceSlugFromPath = (path: string): string =>
+  path.startsWith('/service/') ? path.slice('/service/'.length) : '';
 
 export default function App() {
-  const [route, setRoute] = useState<Route>(() => routeFromHash(window.location.hash));
-  /** Current case-study slug — lets `#/case-study/a` → `#/case-study/b` re-render. */
-  const [caseStudySlug, setCaseStudySlug] = useState<string>(() =>
-    caseStudySlugFromHash(window.location.hash)
-  );
-  /** Current service slug — `#/service/<slug>` detail pages. */
-  const [serviceSlug, setServiceSlug] = useState<string>(() =>
-    serviceSlugFromHash(window.location.hash)
-  );
+  const [loc, setLoc] = useState<AppLocation>(() => readLocation());
+  const route = routeFromPath(loc.path);
+  /** Current case-study slug — lets `/case-study/a` → `/case-study/b` re-render. */
+  const caseStudySlug = caseStudySlugFromPath(loc.path);
+  /** Current service slug — `/service/<slug>` detail pages. */
+  const serviceSlug = serviceSlugFromPath(loc.path);
   /** Section id to scroll to once the home page has rendered (cross-page anchor). */
   const [pendingAnchor, setPendingAnchor] = useState<string | null>(null);
   const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
@@ -123,54 +133,57 @@ export default function App() {
     }
   };
 
-  // Cross-page navigation: #/about <-> home anchors (works with back/forward too).
+  // Keep the rendered route in sync with the address bar (back/forward + navigate()).
   useEffect(() => {
-    const onHashChange = () => {
-      const hash = window.location.hash;
-      const next = routeFromHash(hash);
-
-      if (next !== route) {
-        setRoute(next);
-        if (next === 'caseStudy') {
-          // Entering a case study: sync the slug and start at the top.
-          setCaseStudySlug(caseStudySlugFromHash(hash));
-          window.scrollTo({ top: 0, behavior: 'instant' });
-        } else if (next === 'service') {
-          // Entering a service detail page: sync the slug and start at the top.
-          setServiceSlug(serviceSlugFromHash(hash));
-          window.scrollTo({ top: 0, behavior: 'instant' });
-        } else if (next === 'home') {
-          // Landing on the home page from a sub-page: resolve the anchor after render.
-          const id = hash.slice(1);
-          setPendingAnchor(id || 'home');
-        } else {
-          // Page switches (about/contact/portfolio) jump instantly — a smooth
-          // scroll across two full pages feels broken.
-          window.scrollTo({ top: 0, behavior: 'instant' });
-        }
-      } else if (next === 'caseStudy') {
-        // Same route, different slug (or back/forward between studies).
-        const slug = caseStudySlugFromHash(hash);
-        if (slug !== caseStudySlug) {
-          setCaseStudySlug(slug);
-          window.scrollTo({ top: 0, behavior: 'instant' });
-        }
-      } else if (next === 'service') {
-        // Same route, different service slug (or back/forward between services).
-        const slug = serviceSlugFromHash(hash);
-        if (slug !== serviceSlug) {
-          setServiceSlug(slug);
-          window.scrollTo({ top: 0, behavior: 'instant' });
-        }
-      } else if (next === 'home' && hash && hash !== '#/') {
-        // Same-page anchor clicks are handled natively by the browser.
-        setPendingAnchor(null);
-      }
+    const sync = () => setLoc(readLocation());
+    window.addEventListener('popstate', sync);
+    window.addEventListener(ROUTE_EVENT, sync);
+    return () => {
+      window.removeEventListener('popstate', sync);
+      window.removeEventListener(ROUTE_EVENT, sync);
     };
+  }, []);
 
-    window.addEventListener('hashchange', onHashChange);
-    return () => window.removeEventListener('hashchange', onHashChange);
-  }, [route, caseStudySlug, serviceSlug]);
+  // Legacy hash URLs (/#/about, #home) keep working — rewrite once to the clean path.
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash.startsWith('#/')) navigate(hash.slice(1), { replace: true });
+    else if (hash === '#home') navigate('/', { replace: true });
+  }, []);
+
+  // Same-origin path links navigate inside the SPA; anchors & external stay native.
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const link = (e.target as Element | null)?.closest?.('a[href]') as HTMLAnchorElement | null;
+      if (!link) return;
+      const href = link.getAttribute('href');
+      if (!href || !href.startsWith('/') || link.hasAttribute('download')) return;
+      if (link.target && link.target !== '_self') return;
+      e.preventDefault();
+      navigate(href);
+    };
+    document.addEventListener('click', onClick);
+    return () => document.removeEventListener('click', onClick);
+  }, []);
+
+  // Scroll policy on path change: sub-pages jump to top, home resolves its anchor.
+  const prevPath = useRef(loc.path);
+  useEffect(() => {
+    if (prevPath.current === loc.path) return; // anchor-only move: browser scrolls natively
+    prevPath.current = loc.path;
+    if (route === 'home') {
+      setPendingAnchor(loc.anchor || 'home');
+    } else {
+      setPendingAnchor(null);
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+  }, [loc, route]);
+
+  // Per-route document SEO — title, description, canonical, OG/Twitter tags.
+  useEffect(() => {
+    applySeo(loc.path);
+  }, [loc.path]);
 
   // Scroll to the requested home-section once it exists in the DOM.
   useEffect(() => {
@@ -244,6 +257,28 @@ export default function App() {
                 <RevivalResearchCaseStudyPage onOpenAudit={handleOpenAudit} />
               ) : caseStudySlug === 'cups-n-chai' ? (
                 <CupsNChaiCaseStudyPage onOpenAudit={handleOpenAudit} />
+              ) : caseStudySlug === 'schaefer-lyndon' ? (
+                <SchaeferLyndonCaseStudyPage onOpenAudit={handleOpenAudit} />
+              ) : caseStudySlug === 'all-about-concrete' ? (
+                <AllAboutConcreteCaseStudyPage onOpenAudit={handleOpenAudit} />
+              ) : caseStudySlug === 'roof-claim' ? (
+                <RoofClaimCaseStudyPage onOpenAudit={handleOpenAudit} />
+              ) : caseStudySlug === 'lung-n-sleep' ? (
+                <LungNSleepCaseStudyPage onOpenAudit={handleOpenAudit} />
+              ) : caseStudySlug === 'plumbex' ? (
+                <PlumbexCaseStudyPage onOpenAudit={handleOpenAudit} />
+              ) : caseStudySlug === 'brightspark-electrical' ? (
+                <BrightSparkCaseStudyPage onOpenAudit={handleOpenAudit} />
+              ) : caseStudySlug === 'bk-industrial-coatings' ? (
+                <BkIndustrialCaseStudyPage onOpenAudit={handleOpenAudit} />
+              ) : caseStudySlug === 'uav-coach-academy' ? (
+                <UavCoachCaseStudyPage onOpenAudit={handleOpenAudit} />
+              ) : caseStudySlug === 'lumiere-fine-jewelry' ? (
+                <LumiereCaseStudyPage onOpenAudit={handleOpenAudit} />
+              ) : caseStudySlug === 'keyguard-locksmith' ? (
+                <KeyGuardCaseStudyPage onOpenAudit={handleOpenAudit} />
+              ) : caseStudySlug === 'rapidrestore' ? (
+                <RapidRestoreCaseStudyPage onOpenAudit={handleOpenAudit} />
               ) : (
                 <CaseStudyPage slug={caseStudySlug} onOpenAudit={handleOpenAudit} />
               )

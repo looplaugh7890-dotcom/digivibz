@@ -57,7 +57,7 @@ const formatDate = (iso: string) => {
 };
 
 /**
- * Admin panel (`#/admin`) — password login, then the contact inbox:
+ * Admin panel (`/admin`) — password login, then the contact inbox:
  * search, filter, status workflow, detail drawer, delete.
  * Rendered without Navbar/Footer (App treats it as a bare route).
  */

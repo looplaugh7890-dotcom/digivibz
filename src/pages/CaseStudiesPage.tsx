@@ -3,7 +3,6 @@ import { motion, useReducedMotion } from 'motion/react';
 import { ArrowRight, FileText, Layers, Settings2, Target, TrendingUp } from 'lucide-react';
 import { Reveal } from '../components/Reveal';
 import {
-  CASE_STUDIES_CTA,
   CASE_STUDIES_INTRO,
   CASE_STUDY_LIBRARY,
   HERO_RESULT_CHIPS,
@@ -19,13 +18,16 @@ interface CaseStudiesPageProps {
 const shortIndustry = (category: string) =>
   category.length > 16 ? category.slice(0, 15).trimEnd() + '…' : category;
 
+/** Hero ledger shows a handful of studies, not the whole library. */
+const CASE_STUDY_LEDGER = CASE_STUDY_LIBRARY.slice(0, 4);
+
 /**
- * Case-study index page (`#/case-studies`) — the library.
+ * Case-study index page (`/case-studies`) — the library.
  *
  * Hero pairs the headline with a "case file" dossier: stacked file covers
  * behind a results ledger whose growth line draws itself, then gets stamped
  * VERIFIED. Below it, every study is a full-width editorial row (cover,
- * story, measured results) linking to its own `#/case-study/<id>` page.
+ * story, measured results) linking to its own `/case-study/<id>` page.
  */
 export const CaseStudiesPage: React.FC<CaseStudiesPageProps> = ({ onOpenAudit }) => {
   const reduceMotion = useReducedMotion();
@@ -111,13 +113,9 @@ export const CaseStudiesPage: React.FC<CaseStudiesPageProps> = ({ onOpenAudit })
                   {industries} industries · {resultsCount} measured results
                 </span>
                 <span className="hidden sm:inline w-px h-4 bg-slate-200" />
-                <a
-                  href="#framework"
-                  className="inline-flex items-center gap-1 hover:text-[#C61A1A] font-medium transition-colors"
-                >
+                <span className="inline-flex items-center gap-1 font-medium">
                   Powered by the 5D Growth Framework
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </a>
+                </span>
               </motion.div>
             </div>
 
@@ -165,7 +163,7 @@ export const CaseStudiesPage: React.FC<CaseStudiesPageProps> = ({ onOpenAudit })
                 >
                   <div className="p-4 space-y-2">
                     <span className="inline-flex items-center px-2 py-0.5 rounded bg-slate-100 text-[9px] font-extrabold uppercase tracking-widest text-slate-400">
-                      Home Services
+                      Locksmith Services
                     </span>
                     <div className="space-y-1.5 pt-1">
                       <div className="h-1.5 w-4/5 rounded-full bg-slate-100" />
@@ -182,7 +180,7 @@ export const CaseStudiesPage: React.FC<CaseStudiesPageProps> = ({ onOpenAudit })
                 >
                   <div className="p-4 space-y-2">
                     <span className="inline-flex items-center px-2 py-0.5 rounded bg-red-50 border border-red-100 text-[9px] font-extrabold uppercase tracking-widest text-[#C61A1A]">
-                      Healthcare
+                      Jewelry & Luxury Retail
                     </span>
                     <div className="space-y-1.5 pt-1">
                       <div className="h-1.5 w-3/5 rounded-full bg-slate-100" />
@@ -201,7 +199,7 @@ export const CaseStudiesPage: React.FC<CaseStudiesPageProps> = ({ onOpenAudit })
                       Case File · Measured Results
                     </span>
                     <span className="text-[9px] font-extrabold uppercase tracking-widest text-[#C61A1A] bg-red-50 border border-red-200 px-2 py-0.5 rounded-full">
-                      All {CASE_STUDY_LIBRARY.length} Studies
+                      Top {CASE_STUDY_LEDGER.length} Results
                     </span>
                   </div>
 
@@ -266,7 +264,7 @@ export const CaseStudiesPage: React.FC<CaseStudiesPageProps> = ({ onOpenAudit })
                     variants={{ hidden: {}, show: { transition: { delayChildren: 0.75, staggerChildren: 0.09 } } }}
                     className="px-5 pb-5 pt-2 space-y-1.5"
                   >
-                    {CASE_STUDY_LIBRARY.map((s) => (
+                    {CASE_STUDY_LEDGER.map((s) => (
                       <motion.li
                         key={s.id}
                         variants={{
@@ -309,22 +307,23 @@ export const CaseStudiesPage: React.FC<CaseStudiesPageProps> = ({ onOpenAudit })
       </section>
 
       {/* ==================================================================
-          2. STATS BAND — the library in four numbers
+          2. STATS BAND — the library in four numbers (white: no black on
+          case-study surfaces)
       =================================================================== */}
-      <div className="bg-black">
+      <div className="bg-white border-y border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-7 grid grid-cols-2 md:grid-cols-4 gap-y-6 gap-x-4">
           {INDEX_STATS.map((stat, i) => (
             <Reveal
               key={stat.label}
               delay={i * 0.07}
-              className={`text-center ${i > 0 ? 'md:border-l md:border-white/15' : ''}`}
+              className={`text-center ${i > 0 ? 'md:border-l md:border-slate-200' : ''}`}
             >
-              <div className="text-2xl sm:text-3xl font-extrabold text-white tabular-nums leading-none">
+              <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 tabular-nums leading-none">
                 {stat.value}
               </div>
               <div className="mt-2 flex items-center justify-center gap-2">
                 <span className="w-1.5 h-1.5 bg-[#C61A1A] rotate-45 shrink-0" />
-                <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-slate-400">
+                <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-slate-500">
                   {stat.label}
                 </span>
               </div>
@@ -363,7 +362,7 @@ export const CaseStudiesPage: React.FC<CaseStudiesPageProps> = ({ onOpenAudit })
               return (
                 <Reveal key={study.id} delay={(i % 2) * 0.06}>
                   <a
-                    href={`#/case-study/${study.id}`}
+                    href={`/case-study/${study.id}`}
                     className="group relative flex flex-col lg:flex-row lg:items-center gap-5 lg:gap-8 rounded-3xl border border-slate-200 bg-white p-4 sm:p-5 overflow-hidden hover:border-red-300 hover:shadow-[0_30px_60px_-38px_rgba(198,26,26,0.5)] transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C61A1A]"
                   >
                     {/* red rail draws across the top on hover */}
@@ -480,55 +479,6 @@ export const CaseStudiesPage: React.FC<CaseStudiesPageProps> = ({ onOpenAudit })
               );
             })}
           </div>
-        </div>
-      </section>
-
-      {/* ==================================================================
-          5. CLOSING CTA — red band
-      =================================================================== */}
-      <section className="relative py-14 md:py-16 bg-[#C61A1A] overflow-hidden">
-        <div className="absolute top-0 left-0 w-40 h-1 bg-white/70" />
-        <div className="absolute top-0 right-0 w-40 h-1 bg-white/70" />
-        <div
-          className="absolute inset-0 opacity-[0.10] pointer-events-none"
-          style={{
-            backgroundImage:
-              'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)',
-            backgroundSize: '3rem 3rem',
-            maskImage: 'radial-gradient(ellipse 70% 60% at 50% 50%, #000 50%, transparent 100%)',
-            WebkitMaskImage: 'radial-gradient(ellipse 70% 60% at 50% 50%, #000 50%, transparent 100%)',
-          }}
-        />
-        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <Reveal>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight">
-              {CASE_STUDIES_CTA.title}
-            </h2>
-          </Reveal>
-          <Reveal delay={0.08}>
-            <p className="mt-4 text-sm sm:text-base text-white/85 leading-relaxed">{CASE_STUDIES_CTA.body}</p>
-          </Reveal>
-          <Reveal delay={0.14} className="mt-7 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <button
-              onClick={onOpenAudit}
-              className="dz-btn-shine inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-white hover:bg-slate-100 text-[#C61A1A] font-bold text-sm sm:text-base rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all group cursor-pointer"
-            >
-              <span>Get My Free Growth Audit</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </button>
-            <a
-              href="#/contact"
-              className="inline-flex items-center justify-center gap-2 px-7 py-3.5 border border-white/50 hover:bg-white/10 text-white font-semibold text-sm sm:text-base rounded-xl transition-all"
-            >
-              Talk to Our Team
-              <ArrowRight className="w-4 h-4" />
-            </a>
-          </Reveal>
-          <Reveal delay={0.2}>
-            <p className="mt-5 text-xs text-white/75">
-              Free personalized plan · Uncover opportunities · Fix gaps · Zero obligation
-            </p>
-          </Reveal>
         </div>
       </section>
     </div>

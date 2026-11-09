@@ -3,12 +3,19 @@ import { CaseStudy, Testimonial, FAQItem, ServicePhase } from '../types';
 // Bundled via ESM imports so Vite fingerprints them into /assets and rewrites
 // to relative paths — literal '/src/assets/...' strings only resolve in dev
 // and would 404 on static hosting (Hostinger).
-import caseStudyHomeServicesImg from '../assets/images/case_study_home_services_1793265215637.jpg';
-import caseStudyFitnessGymImg from '../assets/images/case_study_fitness_gym_1793265216970.jpg';
-import caseStudyEcommerceImg from '../assets/images/case_study_ecommerce_1793265216797.jpg';
-import caseStudyHealthcareImg from '../assets/images/case_study_healthcare_1793265216984.jpg';
 import revivalResearchImg from '../assets/images/revival_research.png';
 import cupsnchaiImg from '../assets/images/cupsnchai.jpg';
+import schaeferLyndonImg from '../assets/images/schaefer_lyndon.jpg';
+import allAboutConcreteImg from '../assets/images/all_about_concrete.png';
+import roofclaimImg from '../assets/images/roofclaim.png';
+import lungNSleepImg from '../assets/images/lung_n_sleep.png';
+import plumbexImg from '../assets/images/plumbex.png';
+import brightsparkImg from '../assets/images/brightspark_listing.png';
+import bkIndustrialImg from '../assets/images/bk_industrial_spread.png';
+import uavCoachImg from '../assets/images/uav_guide.png';
+import lumiereCreativesImg from '../assets/images/lumiere_creatives_a.png';
+import keyguardDashboardImg from '../assets/images/keyguard_dashboard.png';
+import rapidrestoreDashboardImg from '../assets/images/rapidrestore_dashboard.png';
 import {
   REVIVAL_INDEX_RESULTS,
   REVIVAL_INDEX_SUMMARY,
@@ -21,10 +28,76 @@ import {
   CUPS_MODAL_APPROACH,
   CUPS_MODAL_CHALLENGES,
 } from './cupsnchaiCaseStudyContent';
+import {
+  SCHAEFER_INDEX_RESULTS,
+  SCHAEFER_INDEX_SUMMARY,
+  SCHAEFER_MODAL_APPROACH,
+  SCHAEFER_MODAL_CHALLENGES,
+} from './schaeferLyndonCaseStudyContent';
+import {
+  AAC_INDEX_RESULTS,
+  AAC_INDEX_SUMMARY,
+  AAC_MODAL_APPROACH,
+  AAC_MODAL_CHALLENGES,
+} from './allAboutConcreteCaseStudyContent';
+import {
+  ROOF_INDEX_RESULTS,
+  ROOF_INDEX_SUMMARY,
+  ROOF_MODAL_APPROACH,
+  ROOF_MODAL_CHALLENGES,
+} from './roofclaimCaseStudyContent';
+import {
+  LNS_INDEX_RESULTS,
+  LNS_INDEX_SUMMARY,
+  LNS_MODAL_APPROACH,
+  LNS_MODAL_CHALLENGES,
+} from './lungNSleepCaseStudyContent';
+import {
+  PLX_INDEX_RESULTS,
+  PLX_INDEX_SUMMARY,
+  PLX_MODAL_APPROACH,
+  PLX_MODAL_CHALLENGES,
+} from './plumbexCaseStudyContent';
+import {
+  BSP_INDEX_RESULTS,
+  BSP_INDEX_SUMMARY,
+  BSP_MODAL_APPROACH,
+  BSP_MODAL_CHALLENGES,
+} from './brightsparkCaseStudyContent';
+import {
+  BKI_INDEX_RESULTS,
+  BKI_INDEX_SUMMARY,
+  BKI_MODAL_APPROACH,
+  BKI_MODAL_CHALLENGES,
+} from './bkIndustrialCaseStudyContent';
+import {
+  UAV_INDEX_RESULTS,
+  UAV_INDEX_SUMMARY,
+  UAV_MODAL_APPROACH,
+  UAV_MODAL_CHALLENGES,
+} from './uavCoachCaseStudyContent';
+import {
+  LUM_INDEX_RESULTS,
+  LUM_INDEX_SUMMARY,
+  LUM_MODAL_APPROACH,
+  LUM_MODAL_CHALLENGES,
+} from './lumiereCaseStudyContent';
+import {
+  KG_INDEX_RESULTS,
+  KG_INDEX_SUMMARY,
+  KG_MODAL_APPROACH,
+  KG_MODAL_CHALLENGES,
+} from './keyguardCaseStudyContent';
+import {
+  RR_INDEX_RESULTS,
+  RR_INDEX_SUMMARY,
+  RR_MODAL_APPROACH,
+  RR_MODAL_CHALLENGES,
+} from './rapidRestoreCaseStudyContent';
 
 export const CASE_STUDIES: CaseStudy[] = [
   {
-    /* Full bespoke layout at `#/case-study/revival-research`
+    /* Full bespoke layout at `/case-study/revival-research`
        (RevivalResearchCaseStudyPage) — this entry powers the index card,
        the homepage carousel, and the modal preview. */
     id: 'revival-research',
@@ -39,7 +112,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     results: REVIVAL_INDEX_RESULTS,
   },
   {
-    /* Full bespoke layout at `#/case-study/cups-n-chai`
+    /* Full bespoke layout at `/case-study/cups-n-chai`
        (CupsNChaiCaseStudyPage) — powers the index card, homepage
        carousel, and modal preview. */
     id: 'cups-n-chai',
@@ -53,97 +126,163 @@ export const CASE_STUDIES: CaseStudy[] = [
     results: CUPS_INDEX_RESULTS,
   },
   {
-    id: 'home-services',
-    category: 'Home services',
-    industry: 'Home Services / Local Services',
-    title: 'A local services business transformed visibility into dependable...',
-    summary: 'Our 5D Growth Framework helped turn local visibility into consistent, high-converting monthly revenue with a tailored booking flow.',
-    image: caseStudyHomeServicesImg,
-    challenges: [
-      'Low-quality leads that drained sales bandwidth',
-      'Poor local visibility across primary service zip codes',
-      'Inconsistent monthly revenue with seasonal dips'
-    ],
-    whatWeDid: [
-      'Our 5D Growth Framework helped turn visibility into consistent revenue',
-      'Built a conversion-focused local website and streamlined lead flow',
-      'Optimised SEO, paid media, and automated follow-ups as one unified system'
-    ],
-    results: [
-      { label: 'Increase in qualified leads', value: '4×' },
-      { label: 'Revenue growth', value: '2.9×' },
-      { label: 'Lower cost per enquiry', value: '58%' }
-    ]
+    /* Full bespoke layout at `/case-study/schaefer-lyndon`
+       (SchaeferLyndonCaseStudyPage) — powers the index card, homepage
+       carousel, and modal preview. */
+    id: 'schaefer-lyndon',
+    category: 'Self-Storage',
+    industry: 'Self-Storage',
+    title: 'Driving Digital Growth for a Local Self-Storage Provider',
+    summary: SCHAEFER_INDEX_SUMMARY,
+    image: schaeferLyndonImg,
+    challenges: SCHAEFER_MODAL_CHALLENGES,
+    whatWeDid: SCHAEFER_MODAL_APPROACH,
+    results: SCHAEFER_INDEX_RESULTS,
   },
   {
-    id: 'fitness-gyms',
-    category: 'Fitness centers & gyms',
-    industry: 'Fitness Centers & Gyms',
-    title: 'A fitness brand increased enquiries and converted more leads...',
-    summary: 'Turned casual website visitors into signed annual members by coupling automated nurturing funnels with high-intent social and local ads.',
-    image: caseStudyFitnessGymImg,
-    challenges: [
-      'Few membership enquiries and stagnant walk-ins',
-      'Low online engagement across digital touchpoints',
-      'Many leads dropping off during trial sign-up stage'
-    ],
-    whatWeDid: [
-      'Used our 5D Growth Framework to turn website visitors into paying members',
-      'Built a high-converting website with automated 24/7 SMS & email follow-ups',
-      'Combined paid ads and hyper-targeted content marketing to drive qualified traffic'
-    ],
-    results: [
-      { label: 'More membership enquiries', value: '4×' },
-      { label: 'Growth in monthly revenue', value: '3×' },
-      { label: 'Better lead-to-member conversion', value: '70%' }
-    ]
+    /* Full bespoke layout at `/case-study/all-about-concrete`
+       (AllAboutConcreteCaseStudyPage) — powers the index card, homepage
+       carousel, and modal preview. */
+    id: 'all-about-concrete',
+    category: 'Concrete Contracting',
+    industry: 'Concrete Contracting (Commercial & Residential)',
+    title: 'Strengthening Digital Visibility for a Family-Owned Concrete Contractor',
+    summary: AAC_INDEX_SUMMARY,
+    image: allAboutConcreteImg,
+    challenges: AAC_MODAL_CHALLENGES,
+    whatWeDid: AAC_MODAL_APPROACH,
+    results: AAC_INDEX_RESULTS,
   },
   {
-    id: 'ecommerce',
-    category: 'E-commerce',
-    industry: 'E-commerce',
-    title: 'An ecommerce brand improved visibility, traffic quality, and online...',
-    summary: 'Overhauled digital store architecture, optimized product detail pages, and ran precision acquisition campaigns to double repeat customers.',
-    image: caseStudyEcommerceImg,
-    challenges: [
-      'Low online sales conversion rates',
-      'Poor product visibility against entrenched legacy retailers',
-      'High cost per order that eliminated margin'
-    ],
-    whatWeDid: [
-      'Used our 5D Growth Framework to boost online sales and qualified traffic',
-      'Improved product pages and built automated revenue retention funnels',
-      'Ran SEO and paid ads together to reach ready-to-buy customer segments'
-    ],
-    results: [
-      { label: 'Increase in online sales', value: '3.5×' },
-      { label: 'Growth in website traffic', value: '4×' },
-      { label: 'Lower cost per order', value: '50%' }
-    ]
+    /* Full bespoke layout at `/case-study/roof-claim`
+       (RoofClaimCaseStudyPage) — powers the index card, homepage
+       carousel, and modal preview. */
+    id: 'roof-claim',
+    category: 'Roofing Services',
+    industry: 'Roofing Services',
+    title:
+      'How We Helped a Roofing Company Replace Referrals With a Predictable, Multi-Channel Lead System',
+    summary: ROOF_INDEX_SUMMARY,
+    image: roofclaimImg,
+    challenges: ROOF_MODAL_CHALLENGES,
+    whatWeDid: ROOF_MODAL_APPROACH,
+    results: ROOF_INDEX_RESULTS,
   },
   {
-    id: 'healthcare',
-    category: 'Healthcare',
-    industry: 'Healthcare',
-    title: 'A healthcare practice transformed patient acquisition and bookings...',
-    summary: 'Replaced manual marketing with an AI-driven patient acquisition engine that kept consultation schedules full year-round.',
-    image: caseStudyHealthcareImg,
-    challenges: [
-      'Low visibility in local medical search results',
-      'Inconsistent patient inquiries month over month',
-      'High cost per lead from unoptimized paid ad campaigns'
-    ],
-    whatWeDid: [
-      'Used AI-driven market insights to identify high-intent patient searches',
-      'Built a conversion-focused website and seamless online booking system',
-      'Deployed SEO, paid media, and compliance-ready automation as one growth system'
-    ],
-    results: [
-      { label: 'Increase in patient inquiries', value: '4×' },
-      { label: 'Revenue growth', value: '3.2×' },
-      { label: 'Reduction in cost per lead', value: '65%' }
-    ]
-  }
+    /* Full bespoke layout at `/case-study/lung-n-sleep`
+       (LungNSleepCaseStudyPage) — powers the index card, homepage
+       carousel, and modal preview. */
+    id: 'lung-n-sleep',
+    category: 'Pulmonology & Sleep Medicine',
+    industry: 'Pulmonology & Sleep Medicine',
+    title: 'Building a Complete Digital Presence for a Multi-Specialty Pulmonology & Sleep Clinic',
+    summary: LNS_INDEX_SUMMARY,
+    image: lungNSleepImg,
+    challenges: LNS_MODAL_CHALLENGES,
+    whatWeDid: LNS_MODAL_APPROACH,
+    results: LNS_INDEX_RESULTS,
+  },
+  {
+    /* Full bespoke layout at `/case-study/plumbex`
+       (PlumbexCaseStudyPage) — powers the index card, homepage
+       carousel, and modal preview. */
+    id: 'plumbex',
+    category: 'Plumbing Services',
+    industry: 'Plumbing Services',
+    title: 'How We Helped a Plumbing Company Turn Emergency Searches Into Booked Jobs',
+    summary: PLX_INDEX_SUMMARY,
+    image: plumbexImg,
+    challenges: PLX_MODAL_CHALLENGES,
+    whatWeDid: PLX_MODAL_APPROACH,
+    results: PLX_INDEX_RESULTS,
+  },
+  {
+    /* Full bespoke layout at `/case-study/brightspark-electrical`
+       (BrightSparkCaseStudyPage) — powers the index card, homepage
+       carousel, and modal preview. */
+    id: 'brightspark-electrical',
+    category: 'Electrical Services',
+    industry: 'Electrical Services',
+    title:
+      'How Google Business Profile Optimization Turned Local Searches Into Booked Electricians',
+    summary: BSP_INDEX_SUMMARY,
+    image: brightsparkImg,
+    challenges: BSP_MODAL_CHALLENGES,
+    whatWeDid: BSP_MODAL_APPROACH,
+    results: BSP_INDEX_RESULTS,
+  },
+  {
+    /* Full bespoke layout at `/case-study/bk-industrial-coatings`
+       (BkIndustrialCaseStudyPage) — powers the index card, homepage
+       carousel, and modal preview. */
+    id: 'bk-industrial-coatings',
+    category: 'Industrial & Agricultural Equipment Coatings',
+    industry: 'Industrial & Agricultural Equipment Coatings',
+    title: 'A Complete Website Rebuild for a Heavy Equipment Ceramic Coating Company',
+    summary: BKI_INDEX_SUMMARY,
+    image: bkIndustrialImg,
+    challenges: BKI_MODAL_CHALLENGES,
+    whatWeDid: BKI_MODAL_APPROACH,
+    results: BKI_INDEX_RESULTS,
+  },
+  {
+    /* Full bespoke layout at `/case-study/uav-coach-academy`
+       (UavCoachCaseStudyPage) — powers the index card, homepage
+       carousel, and modal preview. */
+    id: 'uav-coach-academy',
+    category: 'Drone Training & Aviation Education',
+    industry: 'Drone Training & Aviation Education',
+    title:
+      'Ranking #1 for Competitive Drone Certification Keywords Through Strategic Pillar Content',
+    summary: UAV_INDEX_SUMMARY,
+    image: uavCoachImg,
+    challenges: UAV_MODAL_CHALLENGES,
+    whatWeDid: UAV_MODAL_APPROACH,
+    results: UAV_INDEX_RESULTS,
+  },
+  {
+    /* Full bespoke layout at `/case-study/lumiere-fine-jewelry`
+       (LumiereCaseStudyPage) — powers the index card, homepage
+       carousel, and modal preview. */
+    id: 'lumiere-fine-jewelry',
+    category: 'Jewelry & Luxury Retail',
+    industry: 'Jewelry & Luxury Retail',
+    title:
+      'Turning Instagram and Facebook Into a Primary Sales Channel for a Luxury Jewelry Retailer',
+    summary: LUM_INDEX_SUMMARY,
+    image: lumiereCreativesImg,
+    challenges: LUM_MODAL_CHALLENGES,
+    whatWeDid: LUM_MODAL_APPROACH,
+    results: LUM_INDEX_RESULTS,
+  },
+  {
+    /* Full bespoke layout at `/case-study/keyguard-locksmith`
+       (KeyGuardCaseStudyPage) — powers the index card, homepage
+       carousel, and modal preview. */
+    id: 'keyguard-locksmith',
+    category: 'Locksmith Services',
+    industry: 'Locksmith Services',
+    title: 'Turning Emergency Searches Into Booked Locksmith Jobs Through Google Ads',
+    summary: KG_INDEX_SUMMARY,
+    image: keyguardDashboardImg,
+    challenges: KG_MODAL_CHALLENGES,
+    whatWeDid: KG_MODAL_APPROACH,
+    results: KG_INDEX_RESULTS,
+  },
+  {
+    /* Full bespoke layout at `/case-study/rapidrestore`
+       (RapidRestoreCaseStudyPage) — powers the index card, homepage
+       carousel, and modal preview. */
+    id: 'rapidrestore',
+    category: 'Water Damage Restoration',
+    industry: 'Water Damage Restoration',
+    title: 'Getting Found in AI Overviews and Answer Engines During Water Damage Emergencies',
+    summary: RR_INDEX_SUMMARY,
+    image: rapidrestoreDashboardImg,
+    challenges: RR_MODAL_CHALLENGES,
+    whatWeDid: RR_MODAL_APPROACH,
+    results: RR_INDEX_RESULTS,
+  },
 ];
 
 export const TESTIMONIALS: Testimonial[] = [

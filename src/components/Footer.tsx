@@ -64,12 +64,12 @@ export const Footer: React.FC = () => {
             <h4 className="text-xs font-bold text-white uppercase tracking-wider">Quick Links</h4>
             <ul className="space-y-2 text-xs sm:text-sm text-slate-400">
               {[
-                { label: 'Home', href: '#home' },
-                { label: 'About', href: '#/about' },
-                { label: 'Portfolio', href: '#/portfolio' },
-                { label: 'Services', href: '#/services' },
-                { label: 'Case Studies', href: '#/case-studies' },
-                { label: 'Contact', href: '#/contact' },
+                { label: 'Home', href: '/' },
+                { label: 'About', href: '/about' },
+                { label: 'Portfolio', href: '/portfolio' },
+                { label: 'Services', href: '/services' },
+                { label: 'Case Studies', href: '/case-studies' },
+                { label: 'Contact', href: '/contact' },
               ].map((link) => (
                 <li key={link.label}>
                   <a href={link.href} className="inline-flex items-center gap-1.5 hover:text-white transition-colors group">
@@ -87,7 +87,7 @@ export const Footer: React.FC = () => {
             <ul className="space-y-2 text-xs sm:text-sm text-slate-400">
               {['SEO Services', 'Google Ads', 'Web Designing', 'Web Development', 'AI Automation'].map((service) => (
                 <li key={service}>
-                  <a href="#/services" className="inline-flex items-center gap-1.5 hover:text-white transition-colors group">
+                  <a href="/services" className="inline-flex items-center gap-1.5 hover:text-white transition-colors group">
                     <span className="w-0 group-hover:w-2 h-px bg-[#C61A1A] transition-all duration-300" />
                     {service}
                   </a>
@@ -157,13 +157,13 @@ export const Footer: React.FC = () => {
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
           <p>© 2026 DIGIVIBZ. All Rights Reserved.</p>
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-            <a href="#/privacy-policy" className="hover:text-slate-300 transition-colors">Privacy Policy</a>
-            <a href="#/terms" className="hover:text-slate-300 transition-colors">Terms & Conditions</a>
-            <a href="#/refund-policy" className="hover:text-slate-300 transition-colors">Refund Policy</a>
-            <a href="#/marketing-disclaimer" className="hover:text-slate-300 transition-colors">Marketing Disclaimer</a>
-            <a href="#/legal-notice" className="hover:text-slate-300 transition-colors">Legal Notice</a>
+            <a href="/privacy-policy" className="hover:text-slate-300 transition-colors">Privacy Policy</a>
+            <a href="/terms" className="hover:text-slate-300 transition-colors">Terms & Conditions</a>
+            <a href="/refund-policy" className="hover:text-slate-300 transition-colors">Refund Policy</a>
+            <a href="/marketing-disclaimer" className="hover:text-slate-300 transition-colors">Marketing Disclaimer</a>
+            <a href="/legal-notice" className="hover:text-slate-300 transition-colors">Legal Notice</a>
             <a
-              href="#home"
+              href="/"
               aria-label="Back to top"
               className="w-8 h-8 rounded-full border border-[#27272A] bg-[#18181B] flex items-center justify-center hover:bg-[#C61A1A] hover:border-[#C61A1A] hover:text-white transition-all"
             >

@@ -1,5 +1,5 @@
 /**
- * Copy for the Web Designing service page (`#/service/web-designing`).
+ * Copy for the Web Designing service page (`/service/web-designing`).
  *
  * Client-provided text, kept verbatim. Only mechanical fixes were applied:
  * - FAQ `Q1:` … `Q10:` markers dropped (structure, not copy)

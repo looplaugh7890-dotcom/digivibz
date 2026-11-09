@@ -56,7 +56,7 @@ const PROMISE_ICONS: Record<string, React.ComponentType<{ className?: string }>>
 };
 
 /**
- * Privacy Policy page (`#/privacy-policy`).
+ * Privacy Policy page (`/privacy-policy`).
  *
  * Same document architecture as the Refund page — sticky TOC with scrollspy,
  * numbered sections, rule lists — with a signed personal note up top, a
@@ -622,7 +622,7 @@ const SectionBody: React.FC<{ id: string }> = ({ id }) => {
               </a>{' '}
               {CONTACT_AFTER}{' '}
               <a
-                href="#/contact"
+                href="/contact"
                 className="font-bold text-[#C61A1A] hover:underline underline-offset-2"
               >
                 {CONTACT_FORM_LABEL}
@@ -652,7 +652,7 @@ const SectionBody: React.FC<{ id: string }> = ({ id }) => {
             </Reveal>
             <Reveal delay={0.1}>
               <a
-                href="#/contact"
+                href="/contact"
                 className="group flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 hover:border-red-200 hover:shadow-[0_18px_40px_-32px_rgba(198,26,26,0.45)] transition-all h-full"
               >
                 <span className="shrink-0 w-11 h-11 rounded-xl bg-red-50 text-[#C61A1A] flex items-center justify-center border border-red-100">

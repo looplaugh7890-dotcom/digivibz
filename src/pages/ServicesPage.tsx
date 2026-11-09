@@ -60,7 +60,7 @@ const OUTCOME_Y = [112, 190, 268];
  */
 
 /**
- * Services page (`#/services`) — all fifteen services around an orbiting
+ * Services page (`/services`) — all fifteen services around an orbiting
  * capability map, a kinetic service marquee, a filterable grid, and the
  * "one system" convergence diagram.
  */
@@ -154,13 +154,9 @@ export const ServicesPage: React.FC<{ onOpenAudit: () => void }> = ({ onOpenAudi
                   4 disciplines · 1 accountable team
                 </span>
                 <span className="hidden sm:inline w-px h-4 bg-slate-200" />
-                <a
-                  href="#framework"
-                  className="inline-flex items-center gap-1 hover:text-[#C61A1A] font-medium transition-colors"
-                >
+                <span className="inline-flex items-center gap-1 font-medium">
                   Powered by the 5D Growth Framework
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </a>
+                </span>
               </motion.div>
             </div>
 
@@ -413,7 +409,7 @@ export const ServicesPage: React.FC<{ onOpenAudit: () => void }> = ({ onOpenAudi
                 return hasPage ? (
                   <motion.a
                     {...cardProps}
-                    href={`#/service/${service.slug}`}
+                    href={`/service/${service.slug}`}
                     aria-label={`View ${service.name} service page`}
                     className={`${cardProps.className} block cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C61A1A]`}
                   >
@@ -463,7 +459,7 @@ export const ServicesPage: React.FC<{ onOpenAudit: () => void }> = ({ onOpenAudi
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
                 <a
-                  href="#/portfolio"
+                  href="/portfolio"
                   className="inline-flex items-center gap-2 text-sm font-bold text-slate-700 hover:text-[#C61A1A] transition-colors group"
                 >
                   See the results
@@ -681,7 +677,7 @@ export const ServicesPage: React.FC<{ onOpenAudit: () => void }> = ({ onOpenAudi
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
             <a
-              href="#/contact"
+              href="/contact"
               className="inline-flex items-center justify-center gap-2 px-7 py-3.5 border border-white/50 hover:bg-white/10 text-white font-semibold text-sm sm:text-base rounded-xl transition-all"
             >
               Talk to Our Team

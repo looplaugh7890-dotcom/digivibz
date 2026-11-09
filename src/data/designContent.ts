@@ -1,5 +1,5 @@
 /**
- * Copy for the Graphic Design service page (`#/service/graphic-designing`).
+ * Copy for the Graphic Design service page (`/service/graphic-designing`).
  *
  * Client-provided text, kept verbatim. Only mechanical fixes were applied:
  * - missing space after a full stop in the Detect stage

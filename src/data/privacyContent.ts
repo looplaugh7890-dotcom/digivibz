@@ -17,7 +17,7 @@ import {
 import type { LucideIcon } from 'lucide-react';
 
 /**
- * Copy + structure for the Privacy Policy page (`#/privacy-policy`).
+ * Copy + structure for the Privacy Policy page (`/privacy-policy`).
  * Every statement here mirrors the client-provided policy text verbatim;
  * the page only decides how each block is presented. The signed personal
  * note is the one addition — it is clearly marked as a note, not policy.

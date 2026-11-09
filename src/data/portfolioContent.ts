@@ -1,6 +1,6 @@
 /**
- * Copy + data for the Portfolio page (`#/portfolio`) and the
- * case-study detail route (`#/case-study/<slug>`).
+ * Copy + data for the Portfolio page (`/portfolio`) and the
+ * case-study detail route (`/case-study/<slug>`).
  *
  * NOTE: Atlas / Northbridge entries are PREVIEWS — dedicated case-study
  * pages will be fleshed out with full assets in a later pass. The slugs
@@ -34,7 +34,7 @@ export const RESULTS_BOARD = [
 ] as const;
 
 export interface PortfolioProject {
-  /** Future case-study page: `#/case-study/<slug>` */
+  /** Future case-study page: `/case-study/<slug>` */
   slug: string;
   name: string;
   industry: string;

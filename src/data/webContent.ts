@@ -1,5 +1,5 @@
 /**
- * Copy for the Web Development service page (`#/service/web-development`).
+ * Copy for the Web Development service page (`/service/web-development`).
  *
  * Client-provided text, kept verbatim. Only mechanical fixes were applied:
  * - Discover stage paste corruption repaired: the text read

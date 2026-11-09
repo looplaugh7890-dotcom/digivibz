@@ -1,5 +1,5 @@
 /**
- * Copy for the Email Marketing service page (`#/service/email-marketing`).
+ * Copy for the Email Marketing service page (`/service/email-marketing`).
  *
  * Client-provided text, kept verbatim. Only mechanical fixes were applied:
  * - "DigiVibz" -> "Digivibz" in FAQ #12 (brand spelling, matches site)

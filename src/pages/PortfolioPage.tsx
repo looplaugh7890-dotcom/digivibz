@@ -34,7 +34,7 @@ const STEP_ICONS = [Search, PenTool, Wrench, Rocket, Activity] as const;
 const NODE_X = [80, 280, 480, 680, 880];
 
 /**
- * Portfolio page (`#/portfolio`) — the proof page: results board hero,
+ * Portfolio page (`/portfolio`) — the proof page: results board hero,
  * stats rail, client project previews, featured case-study grid, the 5D
  * pipeline, the working-style pulse board, and the closing audit CTA.
  */
@@ -290,7 +290,7 @@ export const PortfolioPage: React.FC<{ onOpenAudit: () => void }> = ({ onOpenAud
 
                   <div className="mt-6">
                     <a
-                      href={`#/case-study/${project.slug}`}
+                      href={`/case-study/${project.slug}`}
                       className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-800 hover:text-[#C61A1A] transition-colors group cursor-pointer"
                     >
                       View Case Study
@@ -326,7 +326,7 @@ export const PortfolioPage: React.FC<{ onOpenAudit: () => void }> = ({ onOpenAud
             {CASE_STUDIES.map((study, i) => (
               <Reveal key={study.id} delay={0.06 * i}>
                 <a
-                  href={`#/case-study/${study.id}`}
+                  href={`/case-study/${study.id}`}
                   className="group block h-full bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-xs hover:shadow-lg hover:-translate-y-1 transition-all duration-300 focus-visible:outline-2 focus-visible:outline-[#C61A1A]"
                 >
                   {/* image + overlay */}

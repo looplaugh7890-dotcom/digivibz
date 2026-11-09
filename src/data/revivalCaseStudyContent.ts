@@ -1,5 +1,5 @@
 /**
- * Copy for the Revival Research case study (`#/case-study/revival-research`).
+ * Copy for the Revival Research case study (`/case-study/revival-research`).
  *
  * Client-supplied copy, used verbatim. The original bullet markers (❌ / ✔ /
  * 📈 🔎 📞 🏆 💰 📱) are rendered as brand icons in the UI instead of emoji —

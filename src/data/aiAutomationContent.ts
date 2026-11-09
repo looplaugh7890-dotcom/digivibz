@@ -1,5 +1,5 @@
 /**
- * Copy for the AI Automation service page (`#/service/ai-automation`).
+ * Copy for the AI Automation service page (`/service/ai-automation`).
  *
  * Client-provided text, kept verbatim. Only mechanical fixes were applied:
  * - straight apostrophes -> typographic (’) to match site typography

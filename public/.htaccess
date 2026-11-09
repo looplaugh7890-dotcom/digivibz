@@ -1,6 +1,16 @@
-# DIGIVIBZ — Hostinger (LiteSpeed/Apache) static hosting rules
-# The app uses hash-based routing (#/about, #/terms …), so NO SPA rewrites
-# are required — every deep link is just index.html + a fragment.
+# DIGIVIBZ - Hostinger (LiteSpeed/Apache) static hosting rules
+# The app uses clean pathname routing (/about, /case-study/<slug>), so every
+# unknown path must fall back to index.html — the SPA router then renders it.
+
+# ---------- SPA fallback (clean URLs) ----------
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  # Real files/dirs win (fingerprinted /assets, robots.txt, favicon…)
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>
 
 # ---------- Compression ----------
 <IfModule mod_deflate.c>

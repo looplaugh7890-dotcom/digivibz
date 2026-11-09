@@ -1,5 +1,5 @@
 /**
- * Copy for the Google Ads Agency service page (`#/service/google-ads-agency`).
+ * Copy for the Google Ads Agency service page (`/service/google-ads-agency`).
  *
  * Client-provided text, kept verbatim. Only mechanical fixes were applied:
  * - straight apostrophes -> typographic (’) to match site typography

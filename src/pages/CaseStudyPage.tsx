@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { ArrowLeft, ArrowRight, CheckCircle2, Target, TrendingUp } from 'lucide-react';
 import { Reveal } from '../components/Reveal';
@@ -6,9 +6,10 @@ import { ProjectMockup } from '../components/ProjectMockup';
 import { CASE_STUDIES } from '../data/content';
 import { PORTFOLIO_PROJECTS, PORTFOLIO_CTA } from '../data/portfolioContent';
 import { CaseStudy } from '../types';
+import { navigate } from '../router';
 
 interface CaseStudyPageProps {
-  /** Slug from `#/case-study/<slug>`. */
+  /** Slug from `/case-study/<slug>`. */
   slug: string;
   onOpenAudit: () => void;
 }
@@ -21,11 +22,11 @@ const Eyebrow: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 );
 
 /**
- * Case-study detail route (`#/case-study/<slug>`).
+ * Case-study detail route (`/case-study/<slug>`).
  *
  * Full layout for the four featured studies; a preview layout for the
  * Atlas / Northbridge entries whose dedicated pages will be fleshed out
- * in a later pass (unknown slugs bounce to `#/portfolio`).
+ * in a later pass (unknown slugs bounce to `/portfolio`).
  */
 export const CaseStudyPage: React.FC<CaseStudyPageProps> = ({ slug, onOpenAudit }) => {
   const reduceMotion = useReducedMotion();
@@ -34,10 +35,13 @@ export const CaseStudyPage: React.FC<CaseStudyPageProps> = ({ slug, onOpenAudit 
   const project = PORTFOLIO_PROJECTS.find((p) => p.slug === slug);
 
   // Unknown slug → send the visitor back to the portfolio grid.
-  if (!study && !project) {
-    if (window.location.hash !== '#/portfolio') window.location.hash = '#/portfolio';
-    return null;
-  }
+  useEffect(() => {
+    if (!study && !project && window.location.pathname !== '/portfolio') {
+      navigate('/portfolio', { replace: true });
+    }
+  }, [study, project]);
+
+  if (!study && !project) return null;
 
   const rise = (delay: number) => ({
     initial: reduceMotion ? false : { opacity: 0, y: 22 },
@@ -59,7 +63,7 @@ export const CaseStudyPage: React.FC<CaseStudyPageProps> = ({ slug, onOpenAudit 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.a
               {...rise(0)}
-              href="#/portfolio"
+              href="/portfolio"
               className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-[#C61A1A] transition-colors group"
             >
               <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
@@ -147,7 +151,7 @@ export const CaseStudyPage: React.FC<CaseStudyPageProps> = ({ slug, onOpenAudit 
                 </p>
                 <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
                   <a
-                    href="#/portfolio"
+                    href="/portfolio"
                     className="inline-flex items-center justify-center gap-2 px-6 py-3 border border-slate-200 hover:border-[#C61A1A] hover:text-[#C61A1A] bg-white text-slate-800 font-semibold text-sm rounded-xl transition-all"
                   >
                     View Case Studies
@@ -184,7 +188,7 @@ export const CaseStudyPage: React.FC<CaseStudyPageProps> = ({ slug, onOpenAudit 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.a
             {...rise(0)}
-            href="#/case-studies"
+            href="/case-studies"
             className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-[#C61A1A] transition-colors group"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
@@ -361,7 +365,7 @@ export const CaseStudyPage: React.FC<CaseStudyPageProps> = ({ slug, onOpenAudit 
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
             <a
-              href="#/case-studies"
+              href="/case-studies"
               className="inline-flex items-center justify-center gap-2 px-7 py-3.5 border border-white/50 hover:bg-white/10 text-white font-semibold text-sm sm:text-base rounded-xl transition-all"
             >
               View More Case Studies

@@ -269,7 +269,7 @@ const PitchSection: React.FC = () => (
         <div className="mt-12 rounded-2xl border border-red-100 bg-red-50/40 px-6 py-6 text-center shadow-[0_24px_50px_-38px_rgba(198,26,26,0.5)]">
           <p className="text-base sm:text-lg font-extrabold text-slate-900">{GA_PITCH.ready}</p>
           <a
-            href="#/contact"
+            href="/contact"
             className="group mt-4 inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-[#C61A1A] hover:bg-[#9E1414] text-white text-sm font-extrabold shadow-[0_20px_45px_-20px_rgba(198,26,26,0.85)] transition-colors cursor-pointer"
           >
             {GA_PITCH.readyCta}
@@ -686,7 +686,7 @@ const FinalCtaSection: React.FC<{ onOpenAudit: () => void }> = ({ onOpenAudit })
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
             <a
-              href="#/contact"
+              href="/contact"
               className="group inline-flex items-center gap-2 px-7 py-4 rounded-xl border border-white/70 text-white hover:bg-white/10 text-sm font-extrabold transition-colors cursor-pointer"
             >
               {GA_CTA.secondary}

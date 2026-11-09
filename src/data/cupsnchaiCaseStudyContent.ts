@@ -1,5 +1,5 @@
 /**
- * Copy for the CupsNChai case study (`#/case-study/cups-n-chai`).
+ * Copy for the CupsNChai case study (`/case-study/cups-n-chai`).
  *
  * Client-supplied copy, used verbatim. The original bullet markers (❌ / ✔ /
  * 📈 🔎 🏆 📝 🎯) are rendered as brand icons in the UI instead of emoji —

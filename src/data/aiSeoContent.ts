@@ -1,5 +1,5 @@
 /**
- * Copy for the AI SEO Services service page (`#/service/ai-seo-services`).
+ * Copy for the AI SEO Services service page (`/service/ai-seo-services`).
  *
  * Client-provided text, kept verbatim. Only mechanical fixes were applied:
  * - straight apostrophes -> typographic (’) to match site typography

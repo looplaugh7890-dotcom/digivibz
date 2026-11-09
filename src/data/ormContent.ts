@@ -1,6 +1,6 @@
 /**
  * Copy for the Online Reputation Management service page
- * (`#/service/online-reputation-management`).
+ * (`/service/online-reputation-management`).
  *
  * Client-provided text, kept verbatim. Only mechanical fixes were applied:
  * - outline numbering stripped from the service list and 5D stages
